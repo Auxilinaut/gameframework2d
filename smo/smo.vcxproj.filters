@@ -59,6 +59,9 @@
     <ClCompile Include="src\simple_logger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\ed210.png">
