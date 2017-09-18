@@ -1,26 +1,57 @@
 #include "entity.h"
+#include "simple_logger.h"
 
-Entity initEntity(Entity *ent)
+void initEntity(Entity *ent, Sprite *sprite, Entity *parent, float frames)
 {
-	ent->draw(ent);
-
+	slog("-INITIALIZING ENTITY");
+	ent->sprite = sprite;
+	ent->frames = frames;
+	ent->currFrame = 0;
+	ent->draw = &drawEntity;
+	ent->update = &updateEntity;
+	slog("-INITIALIZED ENTITY");
+	//ent->free = &freeEntity;
 }
 
 void updateEntity(Entity *ent)
 {
 	//physics
+	if (ent->velocity.x)
+	{
 
+	}
+	else if (ent->velocity.y)
+	{
+
+	}
 
 	//damage
-	ent->HP = ent->HP - ent->dmgTaken;
-	ent->dmgTaken = 0;
-
+	if (ent->dmgTaken)
+	{
+		ent->HP = ent->HP - ent->dmgTaken;
+		ent->dmgTaken = 0;
+	}
 	
 }
 
 void drawEntity(Entity *ent)
 {
+	//update anim frame
+	ent->currFrame += 0.1;
+	if (ent->currFrame >= ent->frames)
+	{
+		ent->currFrame = 0;
+	}
 
+	gf2d_sprite_draw(
+		ent->sprite,
+		ent->position,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		(int)(ent->currFrame));
 }
 
 void freeEntity(Entity *ent)
