@@ -7,17 +7,38 @@
 
 #define MAX_ENTITIES 1000
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 960
+//#define SCREEN_HEIGHT_HALF 360
+//#define SCREEN_HEIGHT_1POINT5 1080
+//#define SCREEN_HEIGHT_2X 1440
+
+Vector2D scrollUp(Vector2D *pos, Vector2D spd) {
+	Vector2D scroll = vector2d(pos->x - spd.x, pos->y - spd.y);
+	if( (scroll.x + SCREEN_WIDTH) < 0 ) scroll.x = SCREEN_WIDTH;
+	if( (scroll.y + SCREEN_HEIGHT) < 0 ) scroll.y = SCREEN_HEIGHT;
+	return scroll;
+}
+
+/*----------------*/
+/*---BEGIN MAIN---*/
+/*----------------*/
+
 int main(int argc, char *argv[])
 {
-    /*variable declarations*/
+
+	/*SPRITES*/
 
 	//Uint32 *time;
-
 	Sprite *background;
+	Vector2D backgroundPos[2];
 	Sprite *mouse;
+	Sprite *penguin;
 
+	/*ENTITIES*/
+
+	Entity testEnt[MAX_ENTITIES];
 	//Entity player;
-	Entity testEnt[100];
 	int entRef = 0;
 
 	const Uint8 *keys;
@@ -37,33 +58,41 @@ int main(int argc, char *argv[])
 
     gf2d_graphics_initialize(
         "gf2d",
-        1200,
-        720,
-        1200,
-        720,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
         vector4d(0,0,0,255),
         0);
 
     gf2d_graphics_set_frame_delay(16);
 
-    gf2d_sprite_init(1024);
+    gf2d_sprite_init(3);
 
     SDL_ShowCursor(SDL_DISABLE);
     
     /*load stuff*/
-	background = gf2d_sprite_load_image("smo/images/backgrounds/bg_flat.png");
+
+	background = gf2d_sprite_load_image("smo/images/backgrounds/street.jpg");
     mouse = gf2d_sprite_load_all("smo/images/pointer.png",32,32,16);
+	penguin = gf2d_sprite_load_all("smo/images/1797.png", 41, 42, 8);
 
 	/*initialize stuff*/
-	for (i = 0; i < 100; i++)
+
+	backgroundPos[0] = vector2d(0, 0);
+	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
+
+	for (i = 0; i < MAX_ENTITIES; i++)
 	{
-		initEntity(&testEnt[i], mouse, NULL, 16);
+		initEntity(&testEnt[i], penguin, NULL, 64);
 		testEnt[i].active = 0;
 	}
+
 	//initEntity(&player, mouse, NULL, 16);
 	//player.position = vector2d(200, 200);
 
     /*main game loop*/
+
 	while (!done)
 	{
 		SDL_PumpEvents();   //update SDL's internal event structures
@@ -85,17 +114,17 @@ int main(int argc, char *argv[])
 		{
 			if (SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
-				if (!clicking)
-				{
+				//if (!clicking)
+				//{
 
-					if (entRef < 100)
+					if (entRef < MAX_ENTITIES)
 					{
 						testEnt[entRef].active = 1;
 						testEnt[entRef].position = vector2d(mx, my);
 						entRef++;
 					}
-				}
-				clicking = 1;
+				//}
+				//clicking = 1;
 			}
 		}
 		else
@@ -108,10 +137,14 @@ int main(int argc, char *argv[])
         //all drawing should happen between clear_screen and next_frame
 
         //backgrounds drawn first
-        gf2d_sprite_draw_image(background,vector2d(0,0));
+		for (i = 0; i < 2; i++)
+		{
+			gf2d_sprite_draw_image(background, backgroundPos[i]);
+			backgroundPos[i] = scrollUp(&backgroundPos[i], vector2d(0, 2));
+		}
 
 		//player.draw(&player);
-		for (i = 0; i < 100; i++)
+		for (i = 0; i < MAX_ENTITIES; i++)
 		{	
 			if(testEnt[i].active)
 				testEnt[i].draw(&testEnt[i]);
@@ -133,9 +166,11 @@ int main(int argc, char *argv[])
 		//if (keys[SDL_SCANCODE_W])
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; //exit condition
 
-        //printf("Rendering at %f FPS\n",gf2d_graphics_get_frames_per_second());
+        printf("Rendering at %f FPS\n",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
     return 0;
 }
 /*eol@eof*/
+
+/*---END MAIN---*/

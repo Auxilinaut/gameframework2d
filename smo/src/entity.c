@@ -3,13 +3,11 @@
 
 void initEntity(Entity *ent, Sprite *sprite, Entity *parent, float frames)
 {
-	slog("-INITIALIZING ENTITY");
 	ent->sprite = sprite;
 	ent->frames = frames;
 	ent->currFrame = 0;
 	ent->draw = &drawEntity;
 	ent->update = &updateEntity;
-	slog("-INITIALIZED ENTITY");
 	//ent->free = &freeEntity;
 }
 

@@ -1,4 +1,0 @@
-﻿  game.c
-c:\users\justin\documents\dev\smo\smo\smo\src\game.c(43): warning C4305: '+=': truncation from 'double' to 'float'
-  smo.vcxproj -> C:\Users\Justin\Documents\dev\smo\smo\smo.exe
-  smo.vcxproj -> C:\Users\Justin\Documents\dev\smo\smo\smo.pdb (Full PDB)

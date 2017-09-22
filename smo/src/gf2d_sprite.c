@@ -198,6 +198,18 @@ void gf2d_sprite_draw_image(Sprite *image,Vector2D position)
         0);
 }
 
+void gf2d_sprite_draw_scaled_image(Sprite *image, Vector2D position, Vector2D scale) {
+	gf2d_sprite_draw(
+		image,
+		position,
+		&scale,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		0);
+}
+
 void gf2d_sprite_draw(
     Sprite * sprite,
     Vector2D position,

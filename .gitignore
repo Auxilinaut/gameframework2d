@@ -1,2 +1,10 @@
 .vs/
 gf2d.log
+smo.VC.db
+smo.ilk
+smo.pdb
+smo.sln
+smo/Debug/
+smo/smo.vcxproj
+smo/smo.vcxproj.filters
+smo/smo.vcxproj.user
