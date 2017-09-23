@@ -3,22 +3,13 @@
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
 #include "simple_logger.h"
-#include "entity.h"
+#include "entity_manager.h"
+#include "physics.h"
 
-#define MAX_ENTITIES 1000
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 960
 //#define SCREEN_HEIGHT_HALF 360
 //#define SCREEN_HEIGHT_1POINT5 1080
 //#define SCREEN_HEIGHT_2X 1440
-
-Vector2D scrollUp(Vector2D *pos, Vector2D spd) {
-	Vector2D scroll = vector2d(pos->x - spd.x, pos->y - spd.y);
-	if( (scroll.x + SCREEN_WIDTH) < 0 ) scroll.x = SCREEN_WIDTH;
-	if( (scroll.y + SCREEN_HEIGHT) < 0 ) scroll.y = SCREEN_HEIGHT;
-	return scroll;
-}
 
 /*----------------*/
 /*---BEGIN MAIN---*/
@@ -35,11 +26,7 @@ int main(int argc, char *argv[])
 	Sprite *mouse;
 	Sprite *penguin;
 
-	/*ENTITIES*/
-
-	Entity testEnt[MAX_ENTITIES];
-	//Entity player;
-	int entRef = 0;
+	EntityManager entityManager;
 
 	const Uint8 *keys;
 	Vector4D mouseColor = { 255,100,255,200 };
@@ -82,29 +69,26 @@ int main(int argc, char *argv[])
 	backgroundPos[0] = vector2d(0, 0);
 	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
+	initEntityManager(&entityManager);
 	for (i = 0; i < MAX_ENTITIES; i++)
 	{
-		initEntity(&testEnt[i], penguin, NULL, 64);
-		testEnt[i].active = 0;
+		entityManager.entList[i].sprite = penguin;
+		entityManager.entList[i].frames = 64;
 	}
-
-	//initEntity(&player, mouse, NULL, 16);
-	//player.position = vector2d(200, 200);
 
     /*main game loop*/
 
 	while (!done)
 	{
-		SDL_PumpEvents();   //update SDL's internal event structures
+
+		/*UPDATE*/
+
+		SDL_PumpEvents(); //update SDL's internal event structures
 		//*time = SDL_GetTicks();
 		keys = SDL_GetKeyboardState(NULL); //get the keyboard state for this frame
 
-		/*update things here*/
-
-		//player.update(&player);
-
 		//update mouse anim frame
-		mf += 0.1;
+		mf += 0.1f;
 		if (mf >= 16.0)
 		{
 			mf = 0;
@@ -117,11 +101,11 @@ int main(int argc, char *argv[])
 				//if (!clicking)
 				//{
 
-					if (entRef < MAX_ENTITIES)
+					if (entityManager.entRef < MAX_ENTITIES-1)
 					{
-						testEnt[entRef].active = 1;
-						testEnt[entRef].position = vector2d(mx, my);
-						entRef++;
+						entityManager.entList[entityManager.entRef].active = 1;
+						entityManager.entList[entityManager.entRef].position = vector2d(mx, my);
+						entityManager.entRef++;
 					}
 				//}
 				//clicking = 1;
@@ -131,6 +115,18 @@ int main(int argc, char *argv[])
 		{
 			clicking = 0;
 		}
+
+		if (keys[SDL_SCANCODE_BACKSPACE])
+		{
+			if (entityManager.entRef > 0)
+			{
+				entityManager.entList[entityManager.entRef].free(&entityManager.entList[entityManager.entRef], &entityManager.entRef);
+			}
+		}
+
+		updateAllEntities(&entityManager);
+
+		/*DRAW*/
         
         gf2d_graphics_clear_screen(); //clears drawing buffers
 
@@ -140,15 +136,11 @@ int main(int argc, char *argv[])
 		for (i = 0; i < 2; i++)
 		{
 			gf2d_sprite_draw_image(background, backgroundPos[i]);
-			backgroundPos[i] = scrollUp(&backgroundPos[i], vector2d(0, 2));
+			scrollUp(&backgroundPos[i].y, 2, NULL, NULL);
 		}
 
-		//player.draw(&player);
-		for (i = 0; i < MAX_ENTITIES; i++)
-		{	
-			if(testEnt[i].active)
-				testEnt[i].draw(&testEnt[i]);
-		}
+		//entities next
+		drawAllEntities(&entityManager);
             
         //UI elements last
         gf2d_sprite_draw(
@@ -162,8 +154,7 @@ int main(int argc, char *argv[])
             (int)mf);
 
         gf2d_graphics_next_frame(); //render current draw frame and skip to the next frame
-        
-		//if (keys[SDL_SCANCODE_W])
+
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; //exit condition
 
         printf("Rendering at %f FPS\n",gf2d_graphics_get_frames_per_second());

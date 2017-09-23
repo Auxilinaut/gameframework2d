@@ -1,24 +1,20 @@
 #include "entity.h"
 #include "simple_logger.h"
 
-void initEntity(Entity *ent, Sprite *sprite, Entity *parent, float frames)
+void initEntity(Entity *ent)
 {
-	ent->sprite = sprite;
-	ent->frames = frames;
-	ent->currFrame = 0;
-	ent->draw = &drawEntity;
 	ent->update = &updateEntity;
-	//ent->free = &freeEntity;
+	ent->draw = &drawEntity;
+	ent->kill = &killEntity;
+	ent->free = &freeEntity;
 }
 
 void updateEntity(Entity *ent)
 {
 	//physics
-	if (ent->velocity.x)
-	{
+	//move(ent);
 
-	}
-	else if (ent->velocity.y)
+	if (ent->colliding)
 	{
 
 	}
@@ -34,25 +30,40 @@ void updateEntity(Entity *ent)
 
 void drawEntity(Entity *ent)
 {
-	//update anim frame
-	ent->currFrame += 0.1;
-	if (ent->currFrame >= ent->frames)
+	//update anim frame if possible
+	if (ent->frames)
 	{
-		ent->currFrame = 0;
-	}
+		ent->currFrame += 0.1;
+		if (ent->currFrame >= ent->frames)
+		{
+			ent->currFrame = 0;
+		}
 
-	gf2d_sprite_draw(
-		ent->sprite,
-		ent->position,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		(int)(ent->currFrame));
+		gf2d_sprite_draw(
+			ent->sprite,
+			ent->position,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			(int)(ent->currFrame)
+		);
+	}
+	else
+	{
+		gf2d_sprite_draw_image(ent->sprite, ent->position);
+	}
+	
 }
 
-void freeEntity(Entity *ent)
+void killEntity(Entity *ent)
 {
+	//tba
+}
 
+void freeEntity(Entity *ent, int *entRef)
+{
+	ent->active = 0;
+	*entRef = *entRef - 1;
 }

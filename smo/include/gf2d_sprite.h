@@ -6,6 +6,9 @@
 #include "gf2d_vector.h"
 #include "gf2d_text.h"
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 960
+
 typedef struct Sprite_S
 {
     int ref_count;

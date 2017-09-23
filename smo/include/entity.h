@@ -4,32 +4,60 @@
 #include "gf2d_sprite.h"
 
 typedef struct Entity_S {
+
 	Sprite *sprite;
 	float frames;
 	float currFrame;
 	Vector4D colorShift;
+
+	Bool active;
 	Vector2D position;
 	Vector2D velocity;
-	Bool active;
+	SDL_Rect *bounds;
+	Bool colliding;
+
 	Bool alive;
 	float HP;
 	float dmgTaken;
+	float dmgDealt;
+
 	struct Entity_S *parent;
-	void(*draw)(struct Entity_S *self);
+
 	void(*update)(struct Entity_S *self);
-	//void(*free)(struct Entity_S *self);
+	void(*draw)(struct Entity_S *self);
+	void(*kill)(struct Entity_S *self);
+	void(*free)(struct Entity_S *self, int *entRef);
+
 }Entity;
 
 /**
-* @brief initialize entity
+* @brief initialize entity variables
 * @param ent reference to self
-* @param sprite reference to sprite
-* @param parent reference to parent entity
-* @param frames number of frames in entity animation
 */
-void initEntity(Entity *ent, Sprite *sprite, Entity *parent, float frames);
-void drawEntity(Entity *ent);
+void initEntity(Entity *ent);
+
+/**
+* @brief update entity physics, collisions, HP, and damage
+* @param ent reference to self
+*/
 void updateEntity(Entity *ent);
-void freeEntity(Entity *ent);
+
+/**
+* @brief handle animations and then draw entity
+* @param ent reference to self
+*/
+void drawEntity(Entity *ent);
+
+/**
+* @brief kill the entity, but keep it in world
+* @param ent reference to self
+*/
+void killEntity(Entity *ent);
+
+/**
+* @brief free space for next entity when this entity is removed from world
+* @param ent reference to self
+*/
+void freeEntity(Entity *ent, int *entRef);
 
 #endif // !__ENTITY_H_
