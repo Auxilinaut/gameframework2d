@@ -1,12 +1,15 @@
 #include "entity.h"
 #include "simple_logger.h"
 
-void initEntity(Entity *ent)
+Entity *initEntity(Entity *ent)
 {
+	ent->active = 1;
+	ent->currFrame = 0;
 	ent->update = &updateEntity;
 	ent->draw = &drawEntity;
 	ent->kill = &killEntity;
 	ent->free = &freeEntity;
+	return ent;
 }
 
 void updateEntity(Entity *ent)
@@ -33,7 +36,7 @@ void drawEntity(Entity *ent)
 	//update anim frame if possible
 	if (ent->frames)
 	{
-		ent->currFrame += 0.1;
+		ent->currFrame += 0.25;
 		if (ent->currFrame >= ent->frames)
 		{
 			ent->currFrame = 0;
@@ -64,6 +67,7 @@ void killEntity(Entity *ent)
 
 void freeEntity(Entity *ent, int *entRef)
 {
-	ent->active = 0;
-	*entRef = *entRef - 1;
+	//ent->active = 0;
+	memset(ent, 0, sizeof(Entity));
+	if (*entRef) *entRef = *entRef - 1;
 }

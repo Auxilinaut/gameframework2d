@@ -18,8 +18,8 @@ Bool checkCollision(SDL_Rect a, SDL_Rect b);
 void move( Entity *ent );
 
 /**
-* @brief moves entity or sprite position upward according to speed,
-* frees out-of-bounds entities or wraps background
+* @brief moves entity or sprite position upward according to speed;
+* also frees out-of-bounds entities or wraps background
 * @param yPos the y position of what is being scrolled up
 * @param spd the speed to scroll at
 * @param ent (optional) the entity being scrolled

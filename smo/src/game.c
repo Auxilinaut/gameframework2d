@@ -70,11 +70,6 @@ int main(int argc, char *argv[])
 	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
 	initEntityManager(&entityManager);
-	for (i = 0; i < MAX_ENTITIES; i++)
-	{
-		entityManager.entList[i].sprite = penguin;
-		entityManager.entList[i].frames = 64;
-	}
 
     /*main game loop*/
 
@@ -84,8 +79,8 @@ int main(int argc, char *argv[])
 		/*UPDATE*/
 
 		SDL_PumpEvents(); //update SDL's internal event structures
-		//*time = SDL_GetTicks();
 		keys = SDL_GetKeyboardState(NULL); //get the keyboard state for this frame
+		//*time = SDL_GetTicks();
 
 		//update mouse anim frame
 		mf += 0.1f;
@@ -103,9 +98,11 @@ int main(int argc, char *argv[])
 
 					if (entityManager.entRef < MAX_ENTITIES-1)
 					{
-						entityManager.entList[entityManager.entRef].active = 1;
-						entityManager.entList[entityManager.entRef].position = vector2d(mx, my);
-						entityManager.entRef++;
+						Entity *ent = initSingleEntity(&entityManager);
+						ent->active = 1;
+						ent->position = vector2d(mx, my);
+						ent->sprite = penguin;
+						ent->frames = 64;
 					}
 				//}
 				//clicking = 1;
@@ -120,7 +117,7 @@ int main(int argc, char *argv[])
 		{
 			if (entityManager.entRef > 0)
 			{
-				entityManager.entList[entityManager.entRef].free(&entityManager.entList[entityManager.entRef], &entityManager.entRef);
+				popEntList(&entityManager);
 			}
 		}
 

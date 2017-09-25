@@ -33,8 +33,9 @@ typedef struct Entity_S {
 /**
 * @brief initialize entity variables
 * @param ent reference to self
+* @return pointer to initialized entity (still requires sprite, frames; todo: animations)
 */
-void initEntity(Entity *ent);
+Entity *initEntity(Entity *ent);
 
 /**
 * @brief update entity physics, collisions, HP, and damage
