@@ -4,7 +4,7 @@
 Entity *initEntity(Entity *ent)
 {
 	ent->active = 1;
-	ent->currFrame = 0;
+	ent->direction = 2;
 	ent->update = &updateEntity;
 	ent->draw = &drawEntity;
 	ent->kill = &killEntity;

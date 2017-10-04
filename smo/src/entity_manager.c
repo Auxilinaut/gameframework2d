@@ -22,7 +22,10 @@ void initEntityManager(EntityManager *entMan)
 void updateAllEntities(EntityManager *entMan)
 {
 	int i;
-	for (i = 0; i < MAX_ENTITIES; i++)
+
+	entMan->entList[0].update(&entMan->entList[0]); // player
+
+	for (i = 1; i < MAX_ENTITIES; i++)
 	{
 		if (entMan->entList[i].active)
 		{
@@ -62,7 +65,7 @@ Entity *initSingleEntity(EntityManager *entMan)
 void popEntList(EntityManager *entMan)
 {
 	int i;
-	for (i = MAX_ENTITIES; i >= 0; i--)
+	for (i = MAX_ENTITIES; i >= 1; i--)
 	{
 		if (entMan->entList[i].active)
 		{

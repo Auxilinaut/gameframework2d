@@ -5,6 +5,7 @@
 #include "simple_logger.h"
 #include "entity_manager.h"
 #include "physics.h"
+#include "player.h"
 
 
 //#define SCREEN_HEIGHT_HALF 360
@@ -28,6 +29,8 @@ int main(int argc, char *argv[])
 
 	EntityManager entityManager;
 
+	Player player;
+
 	const Uint8 *keys;
 	Vector4D mouseColor = { 255,100,255,200 };
 	Bool clicking = 0;
@@ -44,7 +47,7 @@ int main(int argc, char *argv[])
     slog("---==== BEGIN ====---");
 
     gf2d_graphics_initialize(
-        "gf2d",
+        "SMO",
 		SCREEN_WIDTH,
 		SCREEN_HEIGHT,
 		SCREEN_WIDTH,
@@ -61,7 +64,7 @@ int main(int argc, char *argv[])
     /*load stuff*/
 
 	background = gf2d_sprite_load_image("smo/images/backgrounds/street.jpg");
-    mouse = gf2d_sprite_load_all("smo/images/pointer.png",32,32,16);
+    mouse = gf2d_sprite_load_all("smo/images/pointer.png",32, 32, 16);
 	penguin = gf2d_sprite_load_all("smo/images/1797.png", 41, 42, 8);
 
 	/*initialize stuff*/
@@ -70,6 +73,10 @@ int main(int argc, char *argv[])
 	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
 	initEntityManager(&entityManager);
+	
+	initPlayer(&player, &entityManager);
+	player.ent->sprite = penguin;
+	player.ent->frames = 64;
 
     /*main game loop*/
 
@@ -93,8 +100,8 @@ int main(int argc, char *argv[])
 		{
 			if (SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
-				//if (!clicking)
-				//{
+				/*if (!clicking)
+				{
 
 					if (entityManager.entRef < MAX_ENTITIES-1)
 					{
@@ -104,22 +111,46 @@ int main(int argc, char *argv[])
 						ent->sprite = penguin;
 						ent->frames = 64;
 					}
-				//}
-				//clicking = 1;
+				}
+				clicking = 1;*/
 			}
 		}
 		else
 		{
-			clicking = 0;
+			//clicking = 0;
 		}
 
-		if (keys[SDL_SCANCODE_BACKSPACE])
+		
+
+			if (keys[SDL_SCANCODE_A])
+			{
+				if (!clicking)
+				{
+					turn(&player.ent->direction, 0);
+					clicking = 1;
+				}
+			}
+			else if (keys[SDL_SCANCODE_D])
+			{
+				if (!clicking)
+				{
+					turn(&player.ent->direction, 1);
+					clicking = 1;
+				}
+			}
+			else
+			{
+				clicking = 0;
+			}
+
+
+		/*if (keys[SDL_SCANCODE_BACKSPACE])
 		{
 			if (entityManager.entRef > 0)
 			{
 				popEntList(&entityManager);
 			}
-		}
+		}*/
 
 		updateAllEntities(&entityManager);
 

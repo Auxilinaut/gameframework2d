@@ -15,6 +15,7 @@ typedef struct Entity_S {
 	Vector2D velocity;
 	SDL_Rect *bounds;
 	Bool colliding;
+	Uint8 direction; // 0-7, 0=left, increment counterclockwise
 
 	Bool alive;
 	float HP;

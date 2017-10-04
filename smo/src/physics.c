@@ -1,4 +1,5 @@
 #include "physics.h"
+#include "simple_logger.h"
 
 Bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
@@ -48,6 +49,25 @@ Bool checkCollision(SDL_Rect a, SDL_Rect b)
 void move( Entity *ent )
 {
 	if (ent->velocity.x || ent->velocity.y) vector2d_add(ent->position, ent->velocity, ent->position);
+}
+
+void turn( Uint8 *dir, Bool clockwise )
+{
+
+	/********
+	* 7 6 5 *
+	* 0   4 *
+	* 1 2 3 *
+	********/
+
+	if (clockwise)
+	{
+		*dir = (*dir + 1) % 8;
+	}
+	else
+	{
+		*dir = (*dir - 1) % 8;
+	}
 }
 
 void scrollUp(double *yPos, Uint8 spd, Entity *ent, int *entRef)

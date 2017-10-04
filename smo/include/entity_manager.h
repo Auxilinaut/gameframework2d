@@ -8,7 +8,7 @@
 
 typedef struct
 {
-	Entity entList[MAX_ENTITIES]; //todo: abstract player (currently using entList[0])
+	Entity entList[MAX_ENTITIES]; //player is entList[0]
 	int entRef;
 
 }EntityManager;
