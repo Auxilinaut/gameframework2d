@@ -51,16 +51,16 @@ void move( Entity *ent )
 	if (ent->velocity.x || ent->velocity.y) vector2d_add(ent->position, ent->velocity, ent->position);
 }
 
-void turn( Uint8 *dir, Bool clockwise )
+void turn( Uint8 *dir, Bool counterclockwise )
 {
 
-	/********
-	* 7 6 5 *
-	* 0   4 *
-	* 1 2 3 *
-	********/
+	/**********
+	*255 6  5 *
+	* 0     4 *
+	* 1  2  3 *
+	**********/
 
-	if (clockwise)
+	if (counterclockwise)
 	{
 		*dir = (*dir + 1) % 8;
 	}
@@ -70,7 +70,7 @@ void turn( Uint8 *dir, Bool clockwise )
 	}
 }
 
-void scrollUp(double *yPos, Uint8 spd, Entity *ent, int *entRef)
+void scrollUp(double *yPos, double spd, Entity *ent, int *entRef)
 {
 
 	double scrollTo = *yPos - spd;

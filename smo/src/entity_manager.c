@@ -1,4 +1,5 @@
 #include "entity_manager.h"
+#include "player.h"
 
 /*MANAGER*/
 
@@ -30,7 +31,7 @@ void updateAllEntities(EntityManager *entMan)
 		if (entMan->entList[i].active)
 		{
 			entMan->entList[i].update(&entMan->entList[i]);
-			scrollUp(&entMan->entList[i].position.y, 2, &entMan->entList[i], &entMan->entRef);
+			scrollUp(&entMan->entList[i].position.y, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
 		}
 	}
 }
@@ -53,7 +54,6 @@ Entity *initSingleEntity(EntityManager *entMan)
 	{
 		if (!entMan->entList[i].active)
 		{
-			//entMan->entList[i].free(&entMan->entList[i], NULL);
 			entMan->entList[i] = *initEntity(&entMan->entList[i]);
 			entMan->entRef++;
 			return (&entMan->entList[i]);

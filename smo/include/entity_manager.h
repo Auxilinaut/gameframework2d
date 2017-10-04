@@ -16,7 +16,6 @@ typedef struct
 /**
 * @brief initializes the entity manager and its contained entities
 * @param entMan pointer to the entity manager
-* @return EntityManager only one of these needed
 */
 void initEntityManager(EntityManager *entMan);
 

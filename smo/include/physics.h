@@ -19,10 +19,10 @@ void move( Entity *ent );
 
 /**
 * @brief turn an entity clockwise or counterclockwise
-* @param dir pointer to direction entity is facing (0-7, 0=left, increment counterclockwise)
-* @param clockwise whether or not entity is turning clockwise
+* @param dir pointer to direction entity is facing
+* @param counterclockwise whether or not entity is turning counterclockwise
 */
-void turn(Uint8 *dir, Bool clockwise);
+void turn(Uint8 *dir, Bool counterclockwise);
 
 /**
 * @brief moves entity or sprite position upward according to speed;
@@ -32,6 +32,6 @@ void turn(Uint8 *dir, Bool clockwise);
 * @param ent (optional) the entity being scrolled
 * @param entRef (optional) pointer to entity reference counter
 */
-void scrollUp(double *yPos, Uint8 spd, Entity *ent, int *entRef);
+void scrollUp(double *yPos, double spd, Entity *ent, int *entRef);
 
 #endif // !__PHYSICS_H__

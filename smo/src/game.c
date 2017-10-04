@@ -1,8 +1,10 @@
 #include <SDL.h>
 #include <stdio.h>
+
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
 #include "simple_logger.h"
+
 #include "entity_manager.h"
 #include "physics.h"
 #include "player.h"
@@ -164,7 +166,7 @@ int main(int argc, char *argv[])
 		for (i = 0; i < 2; i++)
 		{
 			gf2d_sprite_draw_image(background, backgroundPos[i]);
-			scrollUp(&backgroundPos[i].y, 2, NULL, NULL);
+			scrollUp(&backgroundPos[i].y, PLAYER_SPEED, NULL, NULL);
 		}
 
 		//entities next
