@@ -2,6 +2,7 @@
 #define __ENTITY_H__
 
 #include "gf2d_sprite.h"
+#include "animation.h"
 
 typedef struct Entity_S {
 
@@ -10,12 +11,16 @@ typedef struct Entity_S {
 	float currFrame;
 	Vector4D colorShift;
 
+	AnimList *animList;
+	TextLine currAnim;
+	AnimReturnType animRetType;  /**<set automatically each frame*/
+
 	Bool active;
 	Vector2D position;
 	Vector2D velocity;
 	SDL_Rect *bounds;
 	Bool colliding;
-	Uint8 direction; // 0-7, 0=left, increment counterclockwise
+	Uint8 direction; // 0-6 & 255, 0 = left, increment counterclockwise
 
 	Bool alive;
 	float HP;
