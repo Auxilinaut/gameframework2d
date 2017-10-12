@@ -11,9 +11,9 @@ typedef struct Entity_S {
 	float currFrame;
 	Vector4D colorShift;
 
-	AnimList *animList;
+	struct AnimList_S *animList;
 	TextLine currAnim;
-	AnimReturnType animRetType;  /**<set automatically each frame*/
+	struct AnimReturnType_S *animRetType;  /**<set automatically each frame*/
 
 	Bool active;
 	Vector2D position;

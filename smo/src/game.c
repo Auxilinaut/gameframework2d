@@ -8,6 +8,7 @@
 #include "entity_manager.h"
 #include "physics.h"
 #include "player.h"
+#include "animation.h"
 
 
 //#define SCREEN_HEIGHT_HALF 360
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
 
 	EntityManager entityManager;
 
-	Player player;
+	Player *player = (Player*)malloc(sizeof(Player));
 
 	const Uint8 *keys;
 	Vector4D mouseColor = { 255,100,255,200 };
@@ -76,9 +77,10 @@ int main(int argc, char *argv[])
 
 	initEntityManager(&entityManager);
 	
-	initPlayer(&player, &entityManager);
-	player.ent->sprite = penguin;
-	player.ent->frames = 64;
+	initPlayer(player, &entityManager);
+	player->ent->animList = loadAnimFileToList("smo/anim/penguin.anim");
+	player->ent->sprite = penguin;
+	player->ent->frames = 64;
 
     /*main game loop*/
 
@@ -128,7 +130,7 @@ int main(int argc, char *argv[])
 			{
 				if (!clicking)
 				{
-					turn(&player.ent->direction, 0);
+					turn(&player->ent->direction, 0);
 					clicking = 1;
 				}
 			}
@@ -136,7 +138,7 @@ int main(int argc, char *argv[])
 			{
 				if (!clicking)
 				{
-					turn(&player.ent->direction, 1);
+					turn(&player->ent->direction, 1);
 					clicking = 1;
 				}
 			}

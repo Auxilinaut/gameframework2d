@@ -7,6 +7,8 @@ void initEntityManager(EntityManager *entMan)
 {
 
 	entMan->entRef = 0;
+	
+	//entMan->entList = (Entity*)malloc(sizeof(Entity)*MAX_ENTITIES);
 
 	int i;
 	for (i = 0; i < MAX_ENTITIES; i++)

@@ -7,7 +7,7 @@
 #include "gf2d_text.h"
 
 #define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 960
+#define SCREEN_HEIGHT 720
 
 typedef struct Sprite_S
 {

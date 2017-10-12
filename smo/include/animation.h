@@ -8,18 +8,18 @@
 
 #include <stdio.h>
 #include "gf2d_sprite.h"
-#include "entity_manager.h"
+#include "entity.h"
 
 #define MAX_ANIMATION_LISTS MAX_ENTITIES
 
-typedef enum
+typedef enum AnimType_E
 {
 	AT_NONE,
 	AT_LOOP,
 	AT_PASS
 }AnimType;
 
-typedef enum
+typedef enum AnimReturnType_E
 {
 	ART_ERROR,
 	ART_NORMAL,
@@ -42,7 +42,7 @@ typedef struct Anim_S
 /**
 * @brief List of animations tied to each Entity
 */
-typedef struct
+typedef struct AnimList_S
 {
 	Uint32	 refCount;
 	TextLine fileName;
@@ -69,14 +69,14 @@ AnimList *loadAnimFileToList(char *fileName);
 
 Anim *getAnimFromList(AnimList *al, char *name);
 
-float setAnim(AnimList *al, char *name);
+float setAnimFrame(AnimList *al, char *name);
 
 AnimReturnType findNextFrame(AnimList *al, float * frame, char *name);
 
-void loadEntityAnimFile(Entity *ent, char *file);
+void loadEntityAnimFile(struct Entity_S *ent, char *file);
 
-void setEntityAnim(Entity *ent, char *anim);
+void setEntityAnim(struct Entity_S *ent, char *anim);
 
-void nextEntFrame(Entity *ent);
+void nextEntFrame(struct Entity_S *ent);
 
 #endif

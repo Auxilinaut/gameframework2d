@@ -4,13 +4,13 @@
 #define MAX_ENTITIES 500 + 1 //max + 1 for the player
 
 #include "entity.h"
+#include "animation.h"
 #include "physics.h"
 
 typedef struct
 {
 	Entity entList[MAX_ENTITIES]; //player is entList[0]
 	int entRef;
-
 }EntityManager;
 
 /**

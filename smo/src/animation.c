@@ -1,5 +1,6 @@
 #include "animation.h"
 #include "gf2d_text.h"
+#include "simple_logger.h"
 
 int countAnimsInFile(FILE *file)
 {
@@ -111,7 +112,7 @@ void parseAnimFile(FILE *file, AnimList *animList)
 AnimList *loadAnimFileToList(char *fileName)
 {
 	FILE *file;
-	AnimList *animList;
+	AnimList *animList = (AnimList*)malloc(sizeof(AnimList));
 	int count;
 	file = fopen(fileName, "r");
 	if (!file)
@@ -156,7 +157,7 @@ Anim *getAnimFromList(AnimList *al, char *name)
 	return NULL;
 }
 
-float setAnim(AnimList *al, char *name)
+float setAnimFrame(AnimList *al, char *name)
 {
 	Anim *anim;
 	anim = getAnimFromList(al, name);
@@ -200,7 +201,7 @@ AnimReturnType findNextFrame(AnimList *al, float * frame, char *name)
 	return ART_NORMAL;
 }
 
-void loadEntityAnimFile(Entity *ent, char *file)
+void loadEntityAnimFile(struct Entity_S *ent, char *file)
 {
 	if (!ent)
 	{
@@ -220,15 +221,15 @@ void loadEntityAnimFile(Entity *ent, char *file)
 		ent->animList->framesPerLine);
 }
 
-void setEntityAnim(Entity *ent, char *anim)
+void setEntityAnim(struct Entity_S *ent, char *anim)
 {
 	if (!ent)return;
-	ent->currFrame = setAnim(ent->animList, anim);
+	ent->currFrame = setAnimFrame(ent->animList, anim);
 	gf2d_line_cpy(ent->currAnim, anim);
 }
 
-void nextEntFrame(Entity *ent)
+void nextEntFrame(struct Entity_S *ent)
 {
 	if (!ent)return;
-	ent->animRetType = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
+	(AnimReturnType)(ent->animRetType) = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
 }
