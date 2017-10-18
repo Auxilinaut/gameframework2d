@@ -1,0 +1,3 @@
+bg: smo/images/backgrounds/street1.jpg
+bgm: smo/bgm/level1.ogg
+obstacles: START cone END
