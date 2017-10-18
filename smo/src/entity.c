@@ -36,13 +36,6 @@ void drawEntity(Entity *ent)
 	//update anim frame if possible
 	if (ent->frames)
 	{
-		/*ent->currFrame += 0.25;
-		if (ent->currFrame >= ent->frames)
-		{
-			ent->currFrame = 0;
-		}*/
-
-		(AnimReturnType)(ent->animRetType) = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
 
 		gf2d_sprite_draw(
 			ent->sprite,

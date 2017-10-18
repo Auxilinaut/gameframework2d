@@ -157,7 +157,7 @@ Anim *getAnimFromList(AnimList *al, char *name)
 	return NULL;
 }
 
-float setAnimFrame(AnimList *al, char *name)
+float getAnimFrame(AnimList *al, char *name)
 {
 	Anim *anim;
 	anim = getAnimFromList(al, name);
@@ -224,12 +224,12 @@ void loadEntityAnimFile(struct Entity_S *ent, char *file)
 void setEntityAnim(struct Entity_S *ent, char *anim)
 {
 	if (!ent)return;
-	ent->currFrame = setAnimFrame(ent->animList, anim);
+	ent->currFrame = getAnimFrame(ent->animList, anim);
 	gf2d_line_cpy(ent->currAnim, anim);
 }
 
 void nextEntFrame(struct Entity_S *ent)
 {
 	if (!ent)return;
-	(AnimReturnType)(ent->animRetType) = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
+	if (ent->animList->numAnimations) (AnimReturnType)(ent->animRetType) = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
 }

@@ -9,6 +9,7 @@
 #include "physics.h"
 #include "player.h"
 #include "animation.h"
+//#include "level.h"
 
 
 //#define SCREEN_HEIGHT_HALF 360
@@ -100,61 +101,31 @@ int main(int argc, char *argv[])
 			mf = 0;
 		}
 
-		if (SDL_GetMouseState(&mx, &my))
+		/*if (SDL_GetMouseState(&mx, &my))
 		{
 			if (SDL_BUTTON(SDL_BUTTON_LEFT))
-			{
-				/*if (!clicking)
-				{
+			{*/
 
-					if (entityManager.entRef < MAX_ENTITIES-1)
-					{
-						Entity *ent = initSingleEntity(&entityManager);
-						ent->active = 1;
-						ent->position = vector2d(mx, my);
-						ent->sprite = penguin;
-						ent->frames = 64;
-					}
-				}
-				clicking = 1;*/
+		if (keys[SDL_SCANCODE_A])
+		{
+			if (!clicking)
+			{
+				turn(&player->ent->direction, 0);
+				clicking = 1;
+			}
+		}
+		else if (keys[SDL_SCANCODE_D])
+		{
+			if (!clicking)
+			{
+				turn(&player->ent->direction, 1);
+				clicking = 1;
 			}
 		}
 		else
 		{
-			//clicking = 0;
+			clicking = 0;
 		}
-
-		
-
-			if (keys[SDL_SCANCODE_A])
-			{
-				if (!clicking)
-				{
-					turn(&player->ent->direction, 0);
-					clicking = 1;
-				}
-			}
-			else if (keys[SDL_SCANCODE_D])
-			{
-				if (!clicking)
-				{
-					turn(&player->ent->direction, 1);
-					clicking = 1;
-				}
-			}
-			else
-			{
-				clicking = 0;
-			}
-
-
-		/*if (keys[SDL_SCANCODE_BACKSPACE])
-		{
-			if (entityManager.entRef > 0)
-			{
-				popEntList(&entityManager);
-			}
-		}*/
 
 		updateAllEntities(&entityManager);
 

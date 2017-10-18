@@ -1,47 +1,47 @@
 anim: down
 startFrame: 0
 endFrame: 3
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: downright
 startFrame: 8
 endFrame: 11
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: right
 startFrame: 16
 endFrame: 19
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: upright
 startFrame: 24
 endFrame: 27
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: up
 startFrame: 32
 endFrame: 35
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: upleft
 startFrame: 40
 endFrame: 43
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: left
 startFrame: 48
 endFrame: 51
-frameRate: 0.25
+frameRate: 0.1
 type:   loop
 
 anim: downleft
 startFrame: 56
 endFrame: 59
-frameRate: 0.25
+frameRate: 0.1
 type:   loop

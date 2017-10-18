@@ -1,6 +1,6 @@
 /**
 * Animation handler for Entities
-* Anim (formerly Actor) properties courtesy of EngineerOfLies
+* Derived from Actor properties courtesy of EngineerOfLies
 */
 
 #ifndef __ANIMATION_H__
@@ -65,11 +65,28 @@ int countAnimsInFile(FILE *file);
 */
 void parseAnimFile(FILE *file, AnimList *animList);
 
+/**
+* @brief Opens the specified .anim file to parse into an AnimList
+* @param fileName The name of the file
+* @returns The AnimList after loading and parsing
+*/
 AnimList *loadAnimFileToList(char *fileName);
 
+/**
+* @brief Looks in AnimList for a specific animation name
+* @param al The AnimList to look in
+* @param name The name of the animation desired
+* @returns The Anim found or NULL on error
+*/
 Anim *getAnimFromList(AnimList *al, char *name);
 
-float setAnimFrame(AnimList *al, char *name);
+/**
+* @brief Gets the first frame of an animation
+* @param al The AnimList to look in
+* @param name The name of the animation desired
+* @returns The starting frame for the animation
+*/
+float getAnimFrame(AnimList *al, char *name);
 
 AnimReturnType findNextFrame(AnimList *al, float * frame, char *name);
 

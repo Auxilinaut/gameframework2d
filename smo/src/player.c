@@ -22,39 +22,39 @@ void movePlayer(Entity *ent)
 
 	if (ent->direction == 0)
 	{
-		gf2d_line_cpy(ent->currAnim, "left");
+		if (strcmp(ent->currAnim,"left") != 0) setEntityAnim(ent, "left");
 		ent->velocity.x = -PLAYER_SPEED_HALF;
 		ent->velocity.y = 0;
 		scrollUp(&(ent->position.y), PLAYER_SPEED, NULL, NULL);
 	}
 	else if (ent->direction == 1)
 	{
-		gf2d_line_cpy(ent->currAnim, "downleft");
+		if (strcmp(ent->currAnim, "downleft") != 0) setEntityAnim(ent, "downleft");
 		ent->velocity.x = -PLAYER_SPEED_HALF;
 		ent->velocity.y = PLAYER_SPEED_HALF;
 	}
 	else if (ent->direction == 2)
 	{
-		gf2d_line_cpy(ent->currAnim, "down");
+		if (strcmp(ent->currAnim, "down") != 0) setEntityAnim(ent, "down");
 		ent->velocity.x = 0;
 		ent->velocity.y = PLAYER_SPEED;
 	}
 	else if (ent->direction == 3)
 	{
-		gf2d_line_cpy(ent->currAnim, "downright");
+		if (strcmp(ent->currAnim, "downright") != 0) setEntityAnim(ent, "downright");
 		ent->velocity.x = PLAYER_SPEED_HALF;
 		ent->velocity.y = PLAYER_SPEED_HALF;
 	}
 	else if (ent->direction == 4)
 	{
-		gf2d_line_cpy(ent->currAnim, "right");
+		if (strcmp(ent->currAnim, "right") != 0) setEntityAnim(ent, "right");
 		ent->velocity.x = PLAYER_SPEED_HALF;
 		ent->velocity.y = 0;
 		scrollUp(&(ent->position.y), PLAYER_SPEED, NULL, NULL);
 	}
 	else if (ent->direction == 5)
 	{
-		gf2d_line_cpy(ent->currAnim, "upright");
+		if (strcmp(ent->currAnim, "upright") != 0) setEntityAnim(ent, "upright");
 		ent->velocity.x = 0;
 		ent->velocity.y = -PLAYER_SPEED;
 		move(ent);
@@ -62,7 +62,7 @@ void movePlayer(Entity *ent)
 	}
 	else  if (ent->direction == 255)
 	{
-		gf2d_line_cpy(ent->currAnim, "upleft");
+		if (strcmp(ent->currAnim, "upleft") != 0) setEntityAnim(ent, "upleft");
 		ent->velocity.x = 0;
 		ent->velocity.y = -PLAYER_SPEED;
 		move(ent);
