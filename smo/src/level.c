@@ -1,16 +1,10 @@
 #include "level.h"
-
-void loadBackground(Level lvl, TextLine bgFileName)
-{
-	lvl.background = gf2d_sprite_load_image(bgFileName);
-}
+#include "simple_logger.h"
 
 void loadObstacles(Level lvl, EntityManager *entMan)
 {
 	//*lvl.obstacles = 
 }
-
-#include "simple_logger.h"
 
 int countLevelsInFile(FILE *file)
 {
@@ -41,78 +35,27 @@ void parseLevelFile(FILE *file, LevelList *levelList)
 	{
 		if (strcmp(buf, "bg:") == 0)
 		{
-			fscanf(file, "%s", (char*)&levelList->bg);
+			fscanf(file, "%s", (char*)&levels->bgLine);
 			continue;
 		}
-		if (strcmp(buf, "frameWidth:") == 0)
+		if (strcmp(buf, "bgm:") == 0)
 		{
-			fscanf(file, "%i", &levelList->bgm);
+			fscanf(file, "%i", &levels->bgmLine);
 			continue;
 		}
-		if (strcmp(buf, "frameHeight:") == 0)
+		if (strcmp(buf, "obstacles:") == 0)
 		{
-			fscanf(file, "%i", &levelList->frameHeight);
+			fscanf(file, "%i", &levels->obsBlock);
 			continue;
 		}
-		if (strcmp(buf, "framesPerLine:") == 0)
-		{
-			fscanf(file, "%i", &levelList->framesPerLine);
-			continue;
-		}
-		if (strcmp(buf, "scale:") == 0)
-		{
-			fscanf(file, "%lf,%lf", &levelList->scale.x, &levelList->scale.y);
-			continue;
-		}
-		if (strcmp(buf, "color:") == 0)
-		{
-			fscanf(file, "%lf,%lf,%lf,%lf", &levelList->color.x, &levelList->color.y, &levelList->color.z, &levelList->color.w);
-			continue;
-		}
-		/*if (strcmp(buf, "colorSpecial:") == 0)
-		{
-		fscanf(file, "%lf,%lf,%lf,%lf", &levelList->colorSpecial.x, &levelList->colorSpecial.y, &levelList->colorSpecial.z, &levelList->colorSpecial.w);
-		continue;
-		}*/
 		if (strcmp(buf, "level:") == 0)
 		{
 			levels++;
-			fscanf(file, "%s", (char*)&levels->name);
 			continue;
 		}
 		if (levels < levelList->levels)
 		{
 			slog("file formatting error, expect level: tag before rest of data");
-			continue;
-		}
-		if (strcmp(buf, "type:") == 0)
-		{
-			fscanf(file, "%s", buf);
-			if (strcmp(buf, "loop") == 0)
-			{
-				levels->type = AT_LOOP;
-				continue;
-			}
-			if (strcmp(buf, "pass") == 0)
-			{
-				levels->type = AT_PASS;
-				continue;
-			}
-			continue;
-		}
-		if (strcmp(buf, "startFrame:") == 0)
-		{
-			fscanf(file, "%i", &levels->startFrame);
-			continue;
-		}
-		if (strcmp(buf, "endFrame:") == 0)
-		{
-			fscanf(file, "%i", &levels->endFrame);
-			continue;
-		}
-		if (strcmp(buf, "frameRate:") == 0)
-		{
-			fscanf(file, "%f", &levels->frameRate);
 			continue;
 		}
 		fgets(buf, sizeof(buf), file);
@@ -127,7 +70,7 @@ LevelList *loadLevelFileToList(char *fileName)
 	file = fopen(fileName, "r");
 	if (!file)
 	{
-		slog("failed to open levelation file: %s", fileName);
+		slog("failed to open level file: %s", fileName);
 		return NULL;
 	}
 
@@ -144,102 +87,46 @@ LevelList *loadLevelFileToList(char *fileName)
 	return levelList;
 }
 
-Level *getLevelFromList(LevelList *al, char *name)
+Level *getLevelFromList(LevelList *ll, int id)
 {
 	int i;
-	if (!al)
+	if (!ll)
 	{
-		slog("no levelation list provided");
+		slog("no level list provided");
 		return NULL;
 	}
-	if (!name)
+	if (!id)
 	{
-		slog("no levelation name provided");
+		slog("no level id provided");
 		return NULL;
 	}
-	for (i = 0; i < al->numLevels; i++)
+	for (i = 0; i < ll->numLevels; i++)
 	{
-		if (gf2d_line_cmp(al->levels[i].name, name) == 0)
+		if (ll->levels[i].id == id)
 		{
-			return &al->levels[i];
+			return &ll->levels[i];
 		}
 	}
 	return NULL;
 }
 
-float getLevelFrame(LevelList *al, char *name)
+void loadLevelFile(LevelList *lvlList, char *file)
 {
-	Level *level;
-	level = getLevelFromList(al, name);
-	if (!level)
+	int i;
+	if (!lvlList)
 	{
-		slog("no level found by name %s", name);
-		return ART_ERROR;
-	}
-	return level->startFrame;
-}
-
-LevelReturnType findNextFrame(LevelList *al, float * frame, char *name)
-{
-	Level *level;
-	if (!frame)
-	{
-		slog("missing frame data");
-		return ART_ERROR;
-	}
-	level = getLevelFromList(al, name);
-	if (!level)
-	{
-		slog("no level found by name %s", name);
-		return ART_ERROR;
-	}
-	*frame += level->frameRate;
-	if (*frame >= level->endFrame)
-	{
-		switch (level->type)
-		{
-		case AT_NONE:
-			break;
-		case AT_LOOP:
-			*frame = level->startFrame;
-			break;
-		case AT_PASS:
-			*frame = level->endFrame;
-			return ART_END;
-		}
-	}
-	return ART_NORMAL;
-}
-
-void loadEntityLevelFile(struct Entity_S *ent, char *file)
-{
-	if (!ent)
-	{
-		slog("no entity specified for levelation file loading");
+		slog("no level list specified for level file loading");
 		return;
 	}
-	ent->levelList = loadLevelFileToList(file);
-	if (!ent->levelList)
+	lvlList = loadLevelFileToList(file);
+	if (!lvlList)
 	{
 		return;// should have logged the error already
 	}
-	vector4d_copy(ent->colorShift, ent->levelList->color);
-	ent->sprite = gf2d_sprite_load_all(
-		ent->levelList->sprite,
-		ent->levelList->frameWidth,
-		ent->levelList->frameHeight,
-		ent->levelList->framesPerLine);
-}
-
-void setEntityLevel(struct Entity_S *ent, char *level)
-{
-	if (!ent)return;
-	ent->currFrame = getLevelFrame(ent->levelList, level);
-	gf2d_line_cpy(ent->currLevel, level);
-}
-
-void nextEntFrame(struct Entity_S *ent)
-{
-	if (!ent)return;
-	if (ent->levelList->numLevels) (LevelReturnType)(ent->levelRetType) = findNextFrame(ent->levelList, &ent->currFrame, ent->currLevel);
+	for (i = 0; i < lvlList->numLevels; i++)
+	{
+		lvlList->levels[i].background = gf2d_sprite_load_image(lvlList->levels[i].bgLine);
+		//handle bgm loading
+		//handle obstacle loading
+	}
 }

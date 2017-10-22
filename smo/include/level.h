@@ -4,8 +4,13 @@
 
 typedef struct Level_S
 {
+	int id;
 	Sprite *background;
 	Entity *obstacles;
+	int numObstacles;
+	TextLine bgLine;
+	TextLine bgmLine;
+	TextBlock obsBlock;
 }Level;
 
 typedef struct LevelList_S

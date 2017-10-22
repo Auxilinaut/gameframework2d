@@ -9,6 +9,7 @@ typedef struct Entity_S {
 	Sprite *sprite;
 	float frames;
 	float currFrame;
+	TextWord name;
 	Vector4D colorShift;
 
 	struct AnimList_S *animList;

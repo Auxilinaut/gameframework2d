@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	const Uint8 *keys;
 	Vector4D mouseColor = { 255,100,255,200 };
 	Bool clicking = 0;
-	int mx, my; //mouse pos
+	int mx = 0, my = 0; //mouse pos
 	float mf = 0; //mouse anim frame [0,16.0)
 
     int done = 0; //main while loop

@@ -1,3 +1,14 @@
+level:
 bg: smo/images/backgrounds/street1.jpg
 bgm: smo/bgm/level1.ogg
-obstacles: START cone END
+obstacles: cone
+
+level:
+bg: smo/images/backgrounds/street2.jpg
+bgm: smo/bgm/level2.ogg
+obstacles: cone sign
+
+level:
+bg: smo/images/backgrounds/street3.jpg
+bgm: smo/bgm/level3.ogg
+obstacles: cone sign manhole
