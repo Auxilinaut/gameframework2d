@@ -22,16 +22,33 @@ Bool checkCollision(SDL_Rect a, SDL_Rect b)
 	bottomB = b.y + b.h;
 
 	//If any of the sides from A are outside of B
-	if (bottomA <= topB) return false;
+	if (bottomA <= topB) return 0;
 
-	if (topA >= bottomB) return false;
+	if (topA >= bottomB) return 0;
 
-	if (rightA <= leftB) return false;
+	if (rightA <= leftB) return 0;
 
-	if (leftA >= rightB) return false;
+	if (leftA >= rightB) return 0;
 
 	//If none of the sides from A are outside B
-	return true;
+	return 1;
+}
+
+void gravity(Entity *ent)
+{
+	if (ent->jumping)
+	{
+		if (!ent->falling)
+		{
+			ent->jumpTime += JUMP_SPEED;
+			ent->position.y -= JUMP_SPEED;
+			if (ent->jumpTime >= JUMP_HEIGHT) ent->falling = 1;
+		}
+		ent->jumpTime -= GRAVITY;
+		ent->position.y += GRAVITY;
+
+		if (ent->jumpTime <= 0) ent->jumping = 0;
+	}
 }
 
 void move( Entity *ent )
@@ -58,7 +75,17 @@ void turn( Uint8 *dir, Bool counterclockwise )
 	}
 }
 
-void scrollUp(double *yPos, double spd, Entity *ent, int *entRef)
+void jump(Entity *ent)
+{
+	if (!ent->jumping)
+	{
+		ent->jumping = 1;
+		ent->falling = 0;
+		ent->jumpTime = 0;
+	}
+}
+
+void scrollUp( double *yPos, double spd, Entity *ent, int *entRef )
 {
 
 	double scrollTo = *yPos - spd;

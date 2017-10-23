@@ -3,12 +3,10 @@
 
 void initPlayer(Player *plr, EntityManager *entMan)
 {
-
 	plr->ent = &entMan->entList[0];
 	plr->ent = initEntity(plr->ent);
 	plr->ent->update = &updatePlayer;
 	plr->ent->position = vector2d(400,400);
-	plr->ent->direction = 2;
 }
 
 void movePlayer(Entity *ent)
@@ -22,39 +20,39 @@ void movePlayer(Entity *ent)
 
 	if (ent->direction == 0)
 	{
-		if (strcmp(ent->currAnim,"left") != 0) setEntityAnim(ent, "left");
+		if (strcmp(ent->currAnim,"left") != 0 && !ent->jumping) setEntityAnim(ent, "left");
 		ent->velocity.x = -PLAYER_SPEED_HALF;
 		ent->velocity.y = 0;
 		scrollUp(&(ent->position.y), PLAYER_SPEED, NULL, NULL);
 	}
 	else if (ent->direction == 1)
 	{
-		if (strcmp(ent->currAnim, "downleft") != 0) setEntityAnim(ent, "downleft");
+		if (strcmp(ent->currAnim, "downleft") != 0 && !ent->jumping) setEntityAnim(ent, "downleft");
 		ent->velocity.x = -PLAYER_SPEED_HALF;
 		ent->velocity.y = PLAYER_SPEED_HALF;
 	}
 	else if (ent->direction == 2)
 	{
-		if (strcmp(ent->currAnim, "down") != 0) setEntityAnim(ent, "down");
+		if (strcmp(ent->currAnim, "down") != 0 && !ent->jumping) setEntityAnim(ent, "down");
 		ent->velocity.x = 0;
 		ent->velocity.y = PLAYER_SPEED;
 	}
 	else if (ent->direction == 3)
 	{
-		if (strcmp(ent->currAnim, "downright") != 0) setEntityAnim(ent, "downright");
+		if (strcmp(ent->currAnim, "downright") != 0 && !ent->jumping) setEntityAnim(ent, "downright");
 		ent->velocity.x = PLAYER_SPEED_HALF;
 		ent->velocity.y = PLAYER_SPEED_HALF;
 	}
 	else if (ent->direction == 4)
 	{
-		if (strcmp(ent->currAnim, "right") != 0) setEntityAnim(ent, "right");
+		if (strcmp(ent->currAnim, "right") != 0 && !ent->jumping) setEntityAnim(ent, "right");
 		ent->velocity.x = PLAYER_SPEED_HALF;
 		ent->velocity.y = 0;
 		scrollUp(&(ent->position.y), PLAYER_SPEED, NULL, NULL);
 	}
 	else if (ent->direction == 5)
 	{
-		if (strcmp(ent->currAnim, "upright") != 0) setEntityAnim(ent, "upright");
+		if (strcmp(ent->currAnim, "upright") != 0 && !ent->jumping) setEntityAnim(ent, "upright");
 		ent->velocity.x = 0;
 		ent->velocity.y = -PLAYER_SPEED;
 		move(ent);
@@ -62,7 +60,7 @@ void movePlayer(Entity *ent)
 	}
 	else  if (ent->direction == 255)
 	{
-		if (strcmp(ent->currAnim, "upleft") != 0) setEntityAnim(ent, "upleft");
+		if (strcmp(ent->currAnim, "upleft") != 0 && !ent->jumping) setEntityAnim(ent, "upleft");
 		ent->velocity.x = 0;
 		ent->velocity.y = -PLAYER_SPEED;
 		move(ent);
@@ -72,7 +70,8 @@ void movePlayer(Entity *ent)
 
 void updatePlayer(Entity *ent)
 {
-	movePlayer(ent, PLAYER_SPEED);
+	if (ent->jumping) gravity(ent);
+	movePlayer(ent);
 	move(ent);
 	if (ent->position.y < 0)
 	{

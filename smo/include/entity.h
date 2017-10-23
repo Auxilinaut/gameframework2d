@@ -20,8 +20,11 @@ typedef struct Entity_S {
 	Vector2D position;
 	Vector2D velocity;
 	SDL_Rect *bounds;
+	Bool jumping;
+	Bool falling;
+	int jumpTime; // [0, JUMP_HEIGHT]
 	Bool colliding;
-	Uint8 direction; // 0-6 & 255, 0 = left, increment counterclockwise
+	Uint8 direction; // [0-6,255] 0 = left, increment counterclockwise
 
 	Bool alive;
 	float HP;

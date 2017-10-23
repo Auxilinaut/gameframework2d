@@ -8,7 +8,8 @@
 #include "entity_manager.h"
 #include "physics.h"
 #include "player.h"
-#include "animation.h"
+#include "skateboard.h"
+//#include "animation.h"
 #include "level.h"
 
 
@@ -24,21 +25,23 @@ int main(int argc, char *argv[])
 {
 
 	/*SPRITES*/
-	Sprite *background;
-	Vector2D backgroundPos[2];
+	Sprite *background; Vector2D backgroundPos[2];
 	Sprite *mouse;
 	Sprite *penguin;
+	Sprite *sb;
 
 	/*ENTITIES*/
 	EntityManager entityManager;
 	Player *player = (Player*)malloc(sizeof(Player));
+	Skateboard *skateboard = (Skateboard*)malloc(sizeof(Skateboard));
 
 	/*INPUT*/
 	const Uint8 *keys;
 	Vector4D mouseColor = { 255,100,255,200 };
 	Bool clicking = 0;
+	Bool typing = 0;
 	int mx = 0, my = 0; //mouse pos
-	float mf = 0; //mouse anim frame [0,16.0)
+	float mf = 0; //mouse anim frame [0,16.0]
 
 	/*LEVELS*/
 	LevelList lvlList;
@@ -74,6 +77,7 @@ int main(int argc, char *argv[])
 	background = gf2d_sprite_load_image("smo/images/backgrounds/street.jpg");
     mouse = gf2d_sprite_load_all("smo/images/pointer.png",32, 32, 16);
 	penguin = gf2d_sprite_load_all("smo/images/1797.png", 41, 42, 8);
+	sb = gf2d_sprite_load_all("smo/images/skateboard.png", 40, 13, 5);
 
 	/*initialize stuff*/
 
@@ -86,6 +90,11 @@ int main(int argc, char *argv[])
 	player->ent->animList = loadAnimFileToList("smo/anim/penguin.anim");
 	player->ent->sprite = penguin;
 	player->ent->frames = 64;
+
+	initSkateboard(skateboard, &entityManager);
+	skateboard->ent->animList = loadAnimFileToList("smo/anim/skateboard.anim");
+	skateboard->ent->sprite = sb;
+	skateboard->ent->frames = 15;
 
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager);
 
@@ -107,28 +116,35 @@ int main(int argc, char *argv[])
 			mf = 0;
 		}
 
-		//if (
 		SDL_GetMouseState(&mx, &my);
 
-		if (keys[SDL_SCANCODE_A])
+		if (keys[SDL_SCANCODE_SPACE])
+		{	
+			if (!typing)
+			{
+				jump(player->ent);
+				typing = 1;
+			}
+		}
+		else if (keys[SDL_SCANCODE_A])
 		{
-			if (!clicking)
+			if (!typing)
 			{
 				turn(&player->ent->direction, 0);
-				clicking = 1;
+				typing = 1;
 			}
 		}
 		else if (keys[SDL_SCANCODE_D])
 		{
-			if (!clicking)
+			if (!typing)
 			{
 				turn(&player->ent->direction, 1);
-				clicking = 1;
+				typing = 1;
 			}
 		}
 		else
 		{
-			clicking = 0;
+			typing = 0;
 		}
 
 		updateAllEntities(&entityManager);

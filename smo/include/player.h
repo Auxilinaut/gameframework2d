@@ -1,3 +1,6 @@
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
+
 #include "entity_manager.h"
 
 #define PLAYER_SPEED 2.0
@@ -5,11 +8,9 @@
 
 typedef struct Player_S
 {
-
 	Entity *ent;
 	int score;
 	int highScore;
-
 }Player;
 
 /**
@@ -29,3 +30,5 @@ void movePlayer(Entity *ent);
 * @param ent pointer to player entity
 */
 void updatePlayer(Entity *ent);
+
+#endif

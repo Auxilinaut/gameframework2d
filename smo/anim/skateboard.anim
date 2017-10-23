@@ -1,0 +1,47 @@
+anim: down
+startFrame: 0
+endFrame: 0
+frameRate: 0
+type:   none
+
+anim: side
+startFrame: 1
+endFrame: 1
+frameRate: 0
+type:   none
+
+anim: downleft
+startFrame: 6
+endFrame: 6
+frameRate: 0
+type:   none
+
+anim: downright
+startFrame: 9
+endFrame: 9
+frameRate: 0
+type:   none
+
+anim: downright
+startFrame: 9
+endFrame: 9
+frameRate: 0
+type:   none
+
+anim: shoveit
+startFrame: 0
+endFrame: 1
+frameRate: 0.05
+type:   pass
+
+anim: treflip
+startFrame: 5
+endFrame: 9
+frameRate: 0.1
+type:   pass
+
+anim: kickflip
+startFrame: 10
+endFrame: 14
+frameRate: 0.1
+type:   pass
