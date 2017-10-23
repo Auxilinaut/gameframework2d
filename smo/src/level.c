@@ -1,9 +1,76 @@
 #include "level.h"
 #include "simple_logger.h"
 
-void loadObstacles(Level lvl, EntityManager *entMan)
+//like fgets but for strings
+//altered functionality originally made by Mark Wilkins on StackOverflow
+char *sgets(char * str, int num, char **input)
 {
-	//*lvl.obstacles = 
+	char *next = *input;
+	int  numread = 0;
+	int isComma;
+
+	while (numread + 1 < num && *next) {
+		isComma = (*next == ',');
+		*str++ = *next++;
+		numread++;
+		// comma terminates the line and is not included
+		if (isComma)
+		{
+			*str--;
+			break;
+		}
+	}
+
+	if (numread == 0)
+		return NULL;  // "eof"
+
+					  // must have hit the null terminator or end of line
+	*str = '\0';  // null terminate this string
+				  // set up input for next call
+	*input = next;
+	return str;
+}
+
+int countObstaclesInStr(char *obsBlock)
+{
+	char buf[512];
+	int count = 0;
+	if (!obsBlock) return 0; //just in case
+	while (sgets(buf, sizeof(buf), &obsBlock))
+	{
+		count++;
+	}
+	return count;
+}
+
+void loadObstacles(Level *lvl, EntityManager *entMan)
+{
+	int i = 0;
+	char *obstacles = lvl->obsBlock;
+	char buf[128];
+	gf2d_line_cpy(buf, obstacles);
+
+	lvl->obstacles = (Entity*)malloc(sizeof(Entity) * lvl->numObstacles);
+	memset(lvl->obstacles, 0, sizeof(Entity) * lvl->numObstacles);
+
+	obstacles = strtok(buf, ",");
+	while (obstacles != NULL)
+	{
+		lvl->obstacles = initSingleEntity(entMan);
+		lvl->obstacles->active = 0;
+
+		gf2d_line_cpy(lvl->obstacles->name, obstacles);
+		slog("name of obstacle #%d: %s", i, lvl->obstacles->name);
+
+		lvl->obstacles++;
+		obstacles = strtok(NULL, ",");
+		i++;
+	}
+
+	for (i = 0; i < lvl->numObstacles; i++)
+	{
+
+	}
 }
 
 int countLevelsInFile(FILE *file)
@@ -23,13 +90,13 @@ int countLevelsInFile(FILE *file)
 	return count;
 }
 
-void parseLevelFile(FILE *file, LevelList *levelList)
+void parseLevelFile(FILE *file, LevelList *lvlList)
 {
 	Level *levels;
 	char buf[512];
 	if (!file)return;
 	rewind(file);
-	levels = levelList->levels;
+	levels = lvlList->levels;
 	levels--;
 	while (fscanf(file, "%s", buf) != EOF)
 	{
@@ -40,12 +107,12 @@ void parseLevelFile(FILE *file, LevelList *levelList)
 		}
 		if (strcmp(buf, "bgm:") == 0)
 		{
-			fscanf(file, "%i", &levels->bgmLine);
+			fscanf(file, "%s", &levels->bgmLine);
 			continue;
 		}
 		if (strcmp(buf, "obstacles:") == 0)
 		{
-			fscanf(file, "%i", &levels->obsBlock);
+			fscanf(file, "%s", &levels->obsBlock);
 			continue;
 		}
 		if (strcmp(buf, "level:") == 0)
@@ -53,7 +120,7 @@ void parseLevelFile(FILE *file, LevelList *levelList)
 			levels++;
 			continue;
 		}
-		if (levels < levelList->levels)
+		if (levels < lvlList->levels)
 		{
 			slog("file formatting error, expect level: tag before rest of data");
 			continue;
@@ -87,10 +154,10 @@ LevelList *loadLevelFileToList(char *fileName)
 	return levelList;
 }
 
-Level *getLevelFromList(LevelList *ll, int id)
+Level *getLevelFromList(LevelList *lvlList, int id)
 {
 	int i;
-	if (!ll)
+	if (!lvlList)
 	{
 		slog("no level list provided");
 		return NULL;
@@ -100,19 +167,19 @@ Level *getLevelFromList(LevelList *ll, int id)
 		slog("no level id provided");
 		return NULL;
 	}
-	for (i = 0; i < ll->numLevels; i++)
+	for (i = 0; i < lvlList->numLevels; i++)
 	{
-		if (ll->levels[i].id == id)
+		if (lvlList->levels[i].id == id)
 		{
-			return &ll->levels[i];
+			return &lvlList->levels[i];
 		}
 	}
 	return NULL;
 }
 
-void loadLevelFile(LevelList *lvlList, char *file)
+void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 {
-	int i;
+	int i, j, obsCount = 0;
 	if (!lvlList)
 	{
 		slog("no level list specified for level file loading");
@@ -125,8 +192,21 @@ void loadLevelFile(LevelList *lvlList, char *file)
 	}
 	for (i = 0; i < lvlList->numLevels; i++)
 	{
+		//handle bg loading
 		lvlList->levels[i].background = gf2d_sprite_load_image(lvlList->levels[i].bgLine);
+		
 		//handle bgm loading
+
 		//handle obstacle loading
+		gf2d_block_cpy(lvlList->levels[i].obsBlockTemp, lvlList->levels[i].obsBlock);
+		obsCount = countObstaclesInStr(lvlList->levels[i].obsBlockTemp);
+		slog("Level #%d obstacle count: %d", (i + 1), obsCount);
+
+		loadObstacles(&lvlList->levels[i], entMan);
+
+		for (j = 0; j < obsCount; j++)
+		{
+			
+		}
 	}
 }

@@ -63,7 +63,7 @@ void scrollUp(double *yPos, double spd, Entity *ent, int *entRef)
 
 	double scrollTo = *yPos - spd;
 
-	if (ent != NULL)
+	if (ent != NULL && ent->active)
 	{
 		if ((scrollTo + ent->sprite->frame_h) < 0)
 		{

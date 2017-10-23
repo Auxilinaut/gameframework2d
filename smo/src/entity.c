@@ -5,7 +5,7 @@ Entity *initEntity(Entity *ent)
 {
 	ent->active = 1;
 	ent->direction = 2;
-	*ent->name = "";
+	*ent->name = NULL;
 	ent->update = &updateEntity;
 	ent->draw = &drawEntity;
 	ent->kill = &killEntity;

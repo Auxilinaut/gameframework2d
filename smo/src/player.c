@@ -80,11 +80,24 @@ void updatePlayer(Entity *ent)
 		ent->direction = 2;
 	}
 
-	if (ent->position.y > SCREEN_HEIGHT)
+	if (ent->position.y + ent->sprite->frame_h > SCREEN_HEIGHT)
 	{
-		ent->position.y = SCREEN_HEIGHT; 
+		ent->position.y = SCREEN_HEIGHT - ent->sprite->frame_h;
 		if (ent->direction >= 2) ent->direction = 4;
 		else ent->direction = 0;
+	}
+	else if (ent->position.x < 0 || ent->position.x + ent->sprite->frame_w > SCREEN_WIDTH)
+	{
+		if (ent->direction >= 2)
+		{
+			ent->position.x = SCREEN_WIDTH - ent->sprite->frame_w;
+			ent->direction = 1;
+		}
+		else
+		{
+			ent->position.x = 0;
+			ent->direction = 3;
+		}
 	}
 
 	nextEntFrame(ent);

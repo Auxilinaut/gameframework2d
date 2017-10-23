@@ -9,7 +9,7 @@
 #include "physics.h"
 #include "player.h"
 #include "animation.h"
-//#include "level.h"
+#include "level.h"
 
 
 //#define SCREEN_HEIGHT_HALF 360
@@ -24,25 +24,29 @@ int main(int argc, char *argv[])
 {
 
 	/*SPRITES*/
-
-	//Uint32 *time;
 	Sprite *background;
 	Vector2D backgroundPos[2];
 	Sprite *mouse;
 	Sprite *penguin;
 
+	/*ENTITIES*/
 	EntityManager entityManager;
-
 	Player *player = (Player*)malloc(sizeof(Player));
 
+	/*INPUT*/
 	const Uint8 *keys;
 	Vector4D mouseColor = { 255,100,255,200 };
 	Bool clicking = 0;
 	int mx = 0, my = 0; //mouse pos
 	float mf = 0; //mouse anim frame [0,16.0)
 
+	/*LEVELS*/
+	LevelList lvlList;
+
+	/*OTHER*/
     int done = 0; //main while loop
 	int i = 0; //generic iterator
+	Uint32 *time;
     
     /*program initialization*/
 
@@ -61,7 +65,7 @@ int main(int argc, char *argv[])
 
     gf2d_graphics_set_frame_delay(16);
 
-    gf2d_sprite_init(3);
+    gf2d_sprite_init(30);
 
     SDL_ShowCursor(SDL_DISABLE);
     
@@ -83,6 +87,8 @@ int main(int argc, char *argv[])
 	player->ent->sprite = penguin;
 	player->ent->frames = 64;
 
+	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager);
+
     /*main game loop*/
 
 	while (!done)
@@ -101,10 +107,8 @@ int main(int argc, char *argv[])
 			mf = 0;
 		}
 
-		/*if (SDL_GetMouseState(&mx, &my))
-		{
-			if (SDL_BUTTON(SDL_BUTTON_LEFT))
-			{*/
+		//if (
+		SDL_GetMouseState(&mx, &my);
 
 		if (keys[SDL_SCANCODE_A])
 		{
