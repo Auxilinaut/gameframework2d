@@ -31,17 +31,17 @@ type:   none
 anim: shoveit
 startFrame: 0
 endFrame: 1
-frameRate: 0.05
-type:   pass
+frameRate: 0.5
+type:   loop
 
 anim: treflip
 startFrame: 5
 endFrame: 9
-frameRate: 0.1
+frameRate: 0.3
 type:   pass
 
 anim: kickflip
 startFrame: 10
 endFrame: 14
-frameRate: 0.1
+frameRate: 0.3
 type:   pass

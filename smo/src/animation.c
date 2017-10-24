@@ -109,7 +109,7 @@ void parseAnimFile(FILE *file, AnimList *animList)
 	}
 }
 
-AnimList *loadAnimFileToList(char *fileName)
+AnimList *getAnimListFromFile(char *fileName)
 {
 	FILE *file;
 	AnimList *animList = (AnimList*)malloc(sizeof(AnimList));
@@ -208,7 +208,7 @@ void loadEntityAnimFile(struct Entity_S *ent, char *file)
 		slog("no entity specified for animation file loading");
 		return;
 	}
-	ent->animList = loadAnimFileToList(file);
+	ent->animList = getAnimListFromFile(file);
 	if (!ent->animList)
 	{
 		return;// should have logged the error already
@@ -231,5 +231,5 @@ void setEntityAnim(struct Entity_S *ent, char *anim)
 void nextEntFrame(struct Entity_S *ent)
 {
 	if (!ent)return;
-	if (ent->animList->numAnimations) (AnimReturnType)(ent->animRetType) = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
+	if (ent->animList != NULL && ent->animList->numAnimations) (AnimReturnType)(ent->animRetType) = findNextFrame(ent->animList, &ent->currFrame, ent->currAnim);
 }

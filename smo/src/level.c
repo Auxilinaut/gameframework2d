@@ -56,20 +56,71 @@ void loadObstacles(Level *lvl, EntityManager *entMan)
 	obstacles = strtok(buf, ",");
 	while (obstacles != NULL)
 	{
-		lvl->obstacles = initSingleEntity(entMan);
-		lvl->obstacles->active = 0;
+		lvl->obstacles[i] = *initEntity(&lvl->obstacles[i]);
+		lvl->obstacles[i].onScreen = 0;
 
-		gf2d_line_cpy(lvl->obstacles->name, obstacles);
-		slog("name of obstacle #%d: %s", i, lvl->obstacles->name);
+		gf2d_line_cpy(lvl->obstacles[i].name, obstacles);
+		//slog("name of obstacle #%d: %s", i, obs->name);
 
-		lvl->obstacles++;
+		//slog("attempting to load sprite for %s", obs->name);
+		if (strcmp(obstacles, "cone") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/cone.png");
+		}
+		else if (strcmp(obstacles, "hydrant") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/hydrant.png");
+		}
+		else if (strcmp(obstacles, "sign") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/sign.png");
+		}
+		else if (strcmp(obstacles, "fish") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_all("smo/images/fish.png", 32, 32, 3);
+			lvl->obstacles[i].animList = getAnimListFromFile("smo/anim/fish.anim");
+			lvl->obstacles[i].frames = 3;
+		}
+		else if (strcmp(obstacles, "snake") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_all("smo/images/snake.png", 32, 32, 3);
+			lvl->obstacles[i].animList = getAnimListFromFile("smo/anim/snake.anim");
+			lvl->obstacles[i].frames = 3;
+		}
+		else if (strcmp(obstacles, "frog") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_all("smo/images/frog.png", 32, 32, 3);
+			lvl->obstacles[i].animList = getAnimListFromFile("smo/anim/frog.anim");
+			lvl->obstacles[i].frames = 3;
+		}
+		else if (strcmp(obstacles, "asteroidone") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/asteroidone.png");
+		}
+		else if (strcmp(obstacles, "asteroidtwo") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/asteroidtwo.png");
+		}
+		else if (strcmp(obstacles, "planetone") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/planetone.png");
+		}
+		else if (strcmp(obstacles, "planettwo") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/planettwo.png");
+		}
+		else if (strcmp(obstacles, "star") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/star.png");
+		}
+		else if (strcmp(obstacles, "blackhole") == 0)
+		{
+			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/blackhole.png");
+		}
+		setBounds(&lvl->obstacles[i]);
+		slog("test sprite %s frame_h %d", lvl->obstacles[i].name, lvl->obstacles[i].sprite->frame_h);
 		obstacles = strtok(NULL, ",");
 		i++;
-	}
-
-	for (i = 0; i < lvl->numObstacles; i++)
-	{
-
 	}
 }
 
@@ -92,6 +143,7 @@ int countLevelsInFile(FILE *file)
 
 void parseLevelFile(FILE *file, LevelList *lvlList)
 {
+	int i = 0;
 	Level *levels;
 	char buf[512];
 	if (!file)return;
@@ -102,7 +154,7 @@ void parseLevelFile(FILE *file, LevelList *lvlList)
 	{
 		if (strcmp(buf, "bg:") == 0)
 		{
-			fscanf(file, "%s", (char*)&levels->bgLine);
+			fscanf(file, "%s", &levels->bgLine);
 			continue;
 		}
 		if (strcmp(buf, "bgm:") == 0)
@@ -117,7 +169,9 @@ void parseLevelFile(FILE *file, LevelList *lvlList)
 		}
 		if (strcmp(buf, "level:") == 0)
 		{
+			i++;
 			levels++;
+			levels->id = i;
 			continue;
 		}
 		if (levels < lvlList->levels)
@@ -129,26 +183,26 @@ void parseLevelFile(FILE *file, LevelList *lvlList)
 	}
 }
 
-LevelList *loadLevelFileToList(char *fileName)
+LevelList getLevelListFromFile(char *fileName)
 {
 	FILE *file;
-	LevelList *levelList = (LevelList*)malloc(sizeof(LevelList));
+	LevelList levelList;
 	int count;
 	file = fopen(fileName, "r");
 	if (!file)
 	{
 		slog("failed to open level file: %s", fileName);
-		return NULL;
+		return;
 	}
 
-	gf2d_line_cpy(levelList->fileName, fileName);
+	gf2d_line_cpy(levelList.fileName, fileName);
 
 	count = countLevelsInFile(file);
-	levelList->levels = (Level*)malloc(sizeof(Level)*count);
-	memset(levelList->levels, 0, sizeof(Level)*count);
-	levelList->numLevels = count;
+	levelList.levels = (Level*)malloc(sizeof(Level)*count);
+	memset(levelList.levels, 0, sizeof(Level)*count);
+	levelList.numLevels = count;
 
-	parseLevelFile(file, levelList);
+	parseLevelFile(file, &levelList);
 
 	fclose(file);
 	return levelList;
@@ -162,11 +216,9 @@ Level *getLevelFromList(LevelList *lvlList, int id)
 		slog("no level list provided");
 		return NULL;
 	}
-	if (!id)
-	{
-		slog("no level id provided");
-		return NULL;
-	}
+
+	
+
 	for (i = 0; i < lvlList->numLevels; i++)
 	{
 		if (lvlList->levels[i].id == id)
@@ -179,34 +231,43 @@ Level *getLevelFromList(LevelList *lvlList, int id)
 
 void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 {
-	int i, j, obsCount = 0;
+	int i, obsCount = 0;
+	//char *obstacles;
+
 	if (!lvlList)
 	{
 		slog("no level list specified for level file loading");
 		return;
 	}
-	lvlList = loadLevelFileToList(file);
-	if (!lvlList)
-	{
-		return;// should have logged the error already
-	}
+
+	*lvlList = getLevelListFromFile(file);
+
+	if (!lvlList) return; //should have logged the error already
+
 	for (i = 0; i < lvlList->numLevels; i++)
 	{
 		//handle bg loading
-		lvlList->levels[i].background = gf2d_sprite_load_image(lvlList->levels[i].bgLine);
+	    lvlList->levels[i].background = gf2d_sprite_load_image(lvlList->levels[i].bgLine);
 		
 		//handle bgm loading
 
 		//handle obstacle loading
 		gf2d_block_cpy(lvlList->levels[i].obsBlockTemp, lvlList->levels[i].obsBlock);
 		obsCount = countObstaclesInStr(lvlList->levels[i].obsBlockTemp);
-		slog("Level #%d obstacle count: %d", (i + 1), obsCount);
+		lvlList->levels[i].numObstacles = obsCount;
 
 		loadObstacles(&lvlList->levels[i], entMan);
+	}
+}
 
-		for (j = 0; j < obsCount; j++)
-		{
-			
-		}
+void loadLevel(Level *lvl, Sprite *background, EntityManager *entMan)
+{
+	slog("loading lvl %d", lvl->id);
+	*background = *lvl->background;
+	for (int i = 3; i < lvl->numObstacles + 3; i++)
+	{
+		entMan->entList[i] = *initEntity(&lvl->obstacles[i-3]);
+		entMan->entList[i].position.x = rand() % SCREEN_WIDTH;
+		entMan->entList[i].position.y = rand() % SCREEN_HEIGHT;
 	}
 }

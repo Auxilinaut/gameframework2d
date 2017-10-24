@@ -1,4 +1,5 @@
 #include "skateboard.h"
+#include "simple_logger.h"
 
 void initSkateboard(Skateboard *sb, EntityManager *entMan)
 {
@@ -8,6 +9,7 @@ void initSkateboard(Skateboard *sb, EntityManager *entMan)
 	sb->ent->position = vector2d(400, 400);
 	sb->ent->direction = 2;
 	sb->ent->parent = &entMan->entList[0]; //player entity is parent
+	sb->ent->onScreen = 1;
 }
 
 void moveSkateboard(Entity *ent)
@@ -19,7 +21,7 @@ void moveSkateboard(Entity *ent)
 	**********/
 
 	Uint8 plrDir = ent->parent->direction;
-	Uint8 trick = rand() % 3 + 1;
+	Uint8 trick = 0;
 
 	if (!ent->parent->jumping) //player not doing a trick
 	{
@@ -54,20 +56,19 @@ void moveSkateboard(Entity *ent)
 	}
 	else //player is doing a trick
 	{
-		if (!ent->parent->falling)
+		if (ent->parent->jumpTime > JUMP_HEIGHT - JUMP_SPEED) trick = rand() % 3 + 1; 
+
+		if (trick == 1)
 		{
-			if (trick == 1)
-			{
-				if (strcmp(ent->currAnim, "shoveit") != 0) setEntityAnim(ent, "shoveit");
-			}
-			else if (trick == 2)
-			{
-				if (strcmp(ent->currAnim, "treflip") != 0) setEntityAnim(ent, "treflip");
-			}
-			else
-			{
-				if (strcmp(ent->currAnim, "kickflip") != 0) setEntityAnim(ent, "kickflip");
-			}
+			if (strcmp(ent->currAnim, "shoveit") != 0) setEntityAnim(ent, "shoveit");
+		}
+		else if (trick == 2)
+		{
+			if (strcmp(ent->currAnim, "treflip") != 0) setEntityAnim(ent, "treflip");
+		}
+		else if (trick == 3)
+		{
+			if (strcmp(ent->currAnim, "kickflip") != 0) setEntityAnim(ent, "kickflip");
 		}
 	}
 
@@ -79,4 +80,5 @@ void moveSkateboard(Entity *ent)
 void updateSkateboard(Entity *ent)
 {
 	moveSkateboard(ent);
+	nextEntFrame(ent);
 }

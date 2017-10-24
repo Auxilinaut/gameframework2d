@@ -27,10 +27,11 @@ void updateAllEntities(EntityManager *entMan)
 	int i;
 
 	entMan->entList[0].update(&entMan->entList[0]); // player
+	entMan->entList[1].update(&entMan->entList[1]); // skateboard
 
-	for (i = 1; i < MAX_ENTITIES; i++)
+	for (i = 2; i < MAX_ENTITIES; i++)
 	{
-		if (entMan->entList[i].active)
+		if (entMan->entList[i].active && entMan->entList[i].onScreen)
 		{
 			entMan->entList[i].update(&entMan->entList[i]);
 			scrollUp(&entMan->entList[i].position.y, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
@@ -43,7 +44,7 @@ void drawAllEntities(EntityManager *entMan)
 	int i;
 	for (i = 0; i < MAX_ENTITIES; i++)
 	{
-		if (entMan->entList[i].active) entMan->entList[i].draw(&entMan->entList[i]);
+		if (entMan->entList[i].active && entMan->entList[i].onScreen) entMan->entList[i].draw(&entMan->entList[i]);
 	}
 }
 

@@ -70,7 +70,7 @@ void parseAnimFile(FILE *file, AnimList *animList);
 * @param fileName The name of the file
 * @returns The AnimList after loading and parsing
 */
-AnimList *loadAnimFileToList(char *fileName);
+AnimList *getAnimListFromFile(char *fileName);
 
 /**
 * @brief Looks in AnimList for a specific animation name

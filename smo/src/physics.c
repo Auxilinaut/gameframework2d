@@ -90,11 +90,11 @@ void scrollUp( double *yPos, double spd, Entity *ent, int *entRef )
 
 	double scrollTo = *yPos - spd;
 
-	if (ent != NULL && ent->active)
+	if (ent != NULL && ent->active && ent->onScreen)
 	{
 		if ((scrollTo + ent->sprite->frame_h) < 0)
 		{
-			ent->free(ent, entRef);
+			scrollTo = SCREEN_HEIGHT;
 		}
 	}
 	else
@@ -103,4 +103,12 @@ void scrollUp( double *yPos, double spd, Entity *ent, int *entRef )
 	}
 
 	*yPos = scrollTo;
+}
+
+void setBounds(Entity *ent)
+{
+	ent->bounds.x = ent->position.x;
+	ent->bounds.y = ent->position.y;
+	ent->bounds.w = ent->sprite->frame_w;
+	ent->bounds.h = ent->sprite->frame_h;
 }

@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 	/*OTHER*/
     int done = 0; //main while loop
 	int i = 0; //generic iterator
-	Uint32 *time;
+	//Uint32 *time;
     
     /*program initialization*/
 
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
     gf2d_graphics_set_frame_delay(16);
 
-    gf2d_sprite_init(30);
+    gf2d_sprite_init(300);
 
     SDL_ShowCursor(SDL_DISABLE);
     
@@ -87,16 +87,33 @@ int main(int argc, char *argv[])
 	initEntityManager(&entityManager);
 	
 	initPlayer(player, &entityManager);
-	player->ent->animList = loadAnimFileToList("smo/anim/penguin.anim");
+	player->ent->animList = getAnimListFromFile("smo/anim/penguin.anim");
 	player->ent->sprite = penguin;
 	player->ent->frames = 64;
+	setBounds(player->ent);
 
 	initSkateboard(skateboard, &entityManager);
-	skateboard->ent->animList = loadAnimFileToList("smo/anim/skateboard.anim");
+	skateboard->ent->animList = getAnimListFromFile("smo/anim/skateboard.anim");
 	skateboard->ent->sprite = sb;
 	skateboard->ent->frames = 15;
 
-	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager);
+	lvlList = getLevelListFromFile("smo/level/level.lvl");
+	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
+	slog("numLevels %d", lvlList.numLevels);
+
+	//uncomment to slog levels/obstacles
+	/*int j = 0;
+	while (j < lvlList.numLevels)
+	{
+		int k = 0;
+		slog("level %d numObstacles %d", j, lvlList.levels[j].numObstacles);
+		while (k < lvlList.levels[j].numObstacles)
+		{
+			slog("obstacle %s", lvlList.levels[j].obstacles[k].name);
+			k++;
+		}
+		j++;
+	}*/
 
     /*main game loop*/
 
@@ -118,7 +135,31 @@ int main(int argc, char *argv[])
 
 		SDL_GetMouseState(&mx, &my);
 
-		if (keys[SDL_SCANCODE_SPACE])
+		if (keys[SDL_SCANCODE_1])
+		{
+			if (!typing)
+			{
+				loadLevel(&lvlList.levels[0], background, &entityManager);
+				typing = 1;
+			}
+		}
+		else if (keys[SDL_SCANCODE_2])
+		{
+			if (!typing)
+			{
+				loadLevel(&lvlList.levels[1], background, &entityManager);
+				typing = 1;
+			}
+		}
+		else if (keys[SDL_SCANCODE_3])
+		{
+			if (!typing)
+			{
+				loadLevel(&lvlList.levels[2], background, &entityManager);
+				typing = 1;
+			}
+		}
+		else if (keys[SDL_SCANCODE_SPACE])
 		{	
 			if (!typing)
 			{

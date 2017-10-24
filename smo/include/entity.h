@@ -17,9 +17,10 @@ typedef struct Entity_S {
 	struct AnimReturnType_S *animRetType;  /**<set automatically each frame*/
 
 	Bool active;
+	Bool onScreen;
 	Vector2D position;
 	Vector2D velocity;
-	SDL_Rect *bounds;
+	SDL_Rect bounds;
 	Bool jumping;
 	Bool falling;
 	int jumpTime; // [0, JUMP_HEIGHT]

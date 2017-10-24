@@ -4,7 +4,7 @@
 #include "entity.h"
 
 #define GRAVITY 2
-#define JUMP_HEIGHT 32
+#define JUMP_HEIGHT 68
 #define JUMP_SPEED 4
 
 /**
@@ -25,7 +25,7 @@ void gravity(Entity *ent);
 * @brief move an entity according to velocity
 * @param ent the entity being moved
 */
-void move( Entity *ent );
+void move(Entity *ent);
 
 /**
 * @brief turn an entity clockwise or counterclockwise
@@ -49,5 +49,11 @@ void jump(Entity *ent);
 * @param entRef (optional) pointer to entity reference counter
 */
 void scrollUp(double *yPos, double spd, Entity *ent, int *entRef);
+
+/**
+* @brief sets the collision bounds of an entity
+* @param ent pointer to entity
+*/
+void setBounds(Entity *ent);
 
 #endif // !__PHYSICS_H__

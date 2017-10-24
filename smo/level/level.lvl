@@ -1,14 +1,14 @@
 level:
-bg: smo/images/backgrounds/street1.jpg
+bg: smo/images/backgrounds/street.jpg
 bgm: smo/bgm/level1.ogg
-obstacles: cone
+obstacles: cone,hydrant,sign
 
 level:
-bg: smo/images/backgrounds/street2.jpg
+bg: smo/images/backgrounds/water.png
 bgm: smo/bgm/level2.ogg
-obstacles: cone,sign
+obstacles: fish,snake,frog
 
 level:
-bg: smo/images/backgrounds/street3.jpg
+bg: smo/images/backgrounds/space.png
 bgm: smo/bgm/level3.ogg
-obstacles: cone,sign,manhole
+obstacles: asteroidone,asteroidtwo,planetone,planettwo,star,blackhole

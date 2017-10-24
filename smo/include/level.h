@@ -27,6 +27,7 @@ int countObstaclesInStr(char *obsBlock);
 void loadObstacles(Level *lvl, EntityManager *entMan);
 int countLevelsInFile(FILE *file);
 void parseLevelFile(FILE *file, LevelList *lvlList);
-LevelList *loadLevelFileToList(char *fileName);
+LevelList getLevelListFromFile(char *fileName);
 Level *getLevelFromList(LevelList *lvlList, int id);
 void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan);
+void loadLevel(Level *lvl, Sprite *background, EntityManager *entMan);

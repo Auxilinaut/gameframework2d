@@ -4,8 +4,8 @@
 Entity *initEntity(Entity *ent)
 {
 	ent->active = 1;
+	ent->onScreen = 1;
 	ent->direction = 2;
-	*ent->name = NULL;
 	ent->colliding = 0;
 	ent->jumping = 0;
 	ent->jumpTime = 0;
@@ -26,6 +26,8 @@ void updateEntity(Entity *ent)
 	{
 
 	}
+
+	nextEntFrame(ent);
 
 	//damage
 	if (ent->dmgTaken)
