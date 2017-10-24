@@ -48,7 +48,7 @@ void jump(Entity *ent);
 * @param ent (optional) the entity being scrolled
 * @param entRef (optional) pointer to entity reference counter
 */
-void scrollUp(double *yPos, double spd, Entity *ent, int *entRef);
+void scrollUp(double *yPos, Sprite *spr, double spd, Entity *ent, int *entRef);
 
 /**
 * @brief sets the collision bounds of an entity

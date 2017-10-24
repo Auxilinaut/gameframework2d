@@ -1,5 +1,5 @@
 level:
-bg: smo/images/backgrounds/street.jpg
+bg: smo/images/backgrounds/street.png
 bgm: smo/bgm/level1.ogg
 obstacles: cone,hydrant,sign
 

@@ -85,7 +85,7 @@ void jump(Entity *ent)
 	}
 }
 
-void scrollUp( double *yPos, double spd, Entity *ent, int *entRef )
+void scrollUp( double *yPos, Sprite *spr, double spd, Entity *ent, int *entRef )
 {
 
 	double scrollTo = *yPos - spd;
@@ -99,7 +99,7 @@ void scrollUp( double *yPos, double spd, Entity *ent, int *entRef )
 	}
 	else
 	{
-		if ((scrollTo + SCREEN_HEIGHT) < 0) scrollTo = SCREEN_HEIGHT;
+		if ((scrollTo + spr->frame_h) < 0) scrollTo = SCREEN_HEIGHT - 2;
 	}
 
 	*yPos = scrollTo;

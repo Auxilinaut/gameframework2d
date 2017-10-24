@@ -24,7 +24,7 @@ void movePlayer(Entity *ent)
 		if (strcmp(ent->currAnim,"left") != 0 && !ent->jumping) setEntityAnim(ent, "left");
 		ent->velocity.x = -PLAYER_SPEED_HALF;
 		ent->velocity.y = 0;
-		scrollUp(&(ent->position.y), PLAYER_SPEED, NULL, NULL);
+		scrollUp(&(ent->position.y), ent->sprite, PLAYER_SPEED, NULL, NULL);
 	}
 	else if (ent->direction == 1)
 	{
@@ -49,7 +49,7 @@ void movePlayer(Entity *ent)
 		if (strcmp(ent->currAnim, "right") != 0 && !ent->jumping) setEntityAnim(ent, "right");
 		ent->velocity.x = PLAYER_SPEED_HALF;
 		ent->velocity.y = 0;
-		scrollUp(&(ent->position.y), PLAYER_SPEED, NULL, NULL);
+		scrollUp(&(ent->position.y), ent->sprite, PLAYER_SPEED, NULL, NULL);
 	}
 	else if (ent->direction == 5)
 	{

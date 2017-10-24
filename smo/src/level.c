@@ -79,18 +79,21 @@ void loadObstacles(Level *lvl, EntityManager *entMan)
 		{
 			lvl->obstacles[i].sprite = gf2d_sprite_load_all("smo/images/fish.png", 32, 32, 3);
 			lvl->obstacles[i].animList = getAnimListFromFile("smo/anim/fish.anim");
+			if (strcmp(lvl->obstacles[i].currAnim, "up") != 0) setEntityAnim(&lvl->obstacles[i], "up");
 			lvl->obstacles[i].frames = 3;
 		}
 		else if (strcmp(obstacles, "snake") == 0)
 		{
 			lvl->obstacles[i].sprite = gf2d_sprite_load_all("smo/images/snake.png", 32, 32, 3);
 			lvl->obstacles[i].animList = getAnimListFromFile("smo/anim/snake.anim");
+			if (strcmp(lvl->obstacles[i].currAnim, "up") != 0) setEntityAnim(&lvl->obstacles[i], "up");
 			lvl->obstacles[i].frames = 3;
 		}
 		else if (strcmp(obstacles, "frog") == 0)
 		{
 			lvl->obstacles[i].sprite = gf2d_sprite_load_all("smo/images/frog.png", 32, 32, 3);
 			lvl->obstacles[i].animList = getAnimListFromFile("smo/anim/frog.anim");
+			if (strcmp(lvl->obstacles[i].currAnim, "up") != 0) setEntityAnim(&lvl->obstacles[i], "up");
 			lvl->obstacles[i].frames = 3;
 		}
 		else if (strcmp(obstacles, "asteroidone") == 0)
@@ -143,7 +146,6 @@ int countLevelsInFile(FILE *file)
 
 void parseLevelFile(FILE *file, LevelList *lvlList)
 {
-	int i = 0;
 	Level *levels;
 	char buf[512];
 	if (!file)return;
@@ -169,9 +171,7 @@ void parseLevelFile(FILE *file, LevelList *lvlList)
 		}
 		if (strcmp(buf, "level:") == 0)
 		{
-			i++;
 			levels++;
-			levels->id = i;
 			continue;
 		}
 		if (levels < lvlList->levels)
@@ -246,9 +246,11 @@ void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 
 	for (i = 0; i < lvlList->numLevels; i++)
 	{
+		lvlList->levels[i].id = i;
+
 		//handle bg loading
 	    lvlList->levels[i].background = gf2d_sprite_load_image(lvlList->levels[i].bgLine);
-		
+
 		//handle bgm loading
 
 		//handle obstacle loading
@@ -260,13 +262,15 @@ void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 	}
 }
 
-void loadLevel(Level *lvl, Sprite *background, EntityManager *entMan)
+void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan)
 {
-	slog("loading lvl %d", lvl->id);
-	*background = *lvl->background;
-	for (int i = 3; i < lvl->numObstacles + 3; i++)
+	slog("loading lvl %d", id);
+	slog("lvl %d bg %s", id, lvlList->levels[id].background->filepath);
+
+	*bg = *lvlList->levels[id].background;
+	for (int i = 2; i < lvlList->levels[id].numObstacles + 2; i++)
 	{
-		entMan->entList[i] = *initEntity(&lvl->obstacles[i-3]);
+		entMan->entList[i] = *initEntity(&lvlList->levels[id].obstacles[i-2]);
 		entMan->entList[i].position.x = rand() % SCREEN_WIDTH;
 		entMan->entList[i].position.y = rand() % SCREEN_HEIGHT;
 	}

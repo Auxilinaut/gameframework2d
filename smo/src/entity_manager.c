@@ -34,7 +34,7 @@ void updateAllEntities(EntityManager *entMan)
 		if (entMan->entList[i].active && entMan->entList[i].onScreen)
 		{
 			entMan->entList[i].update(&entMan->entList[i]);
-			scrollUp(&entMan->entList[i].position.y, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
+			scrollUp(&entMan->entList[i].position.y, &entMan->entList[i].sprite, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
 		}
 	}
 }

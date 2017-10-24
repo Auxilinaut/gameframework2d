@@ -30,4 +30,4 @@ void parseLevelFile(FILE *file, LevelList *lvlList);
 LevelList getLevelListFromFile(char *fileName);
 Level *getLevelFromList(LevelList *lvlList, int id);
 void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan);
-void loadLevel(Level *lvl, Sprite *background, EntityManager *entMan);
+void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan);

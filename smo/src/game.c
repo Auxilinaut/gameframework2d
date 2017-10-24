@@ -74,15 +74,11 @@ int main(int argc, char *argv[])
     
     /*load stuff*/
 
-	background = gf2d_sprite_load_image("smo/images/backgrounds/street.jpg");
     mouse = gf2d_sprite_load_all("smo/images/pointer.png",32, 32, 16);
 	penguin = gf2d_sprite_load_all("smo/images/1797.png", 41, 42, 8);
 	sb = gf2d_sprite_load_all("smo/images/skateboard.png", 40, 13, 5);
 
 	/*initialize stuff*/
-
-	backgroundPos[0] = vector2d(0, 0);
-	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
 	initEntityManager(&entityManager);
 	
@@ -101,19 +97,24 @@ int main(int argc, char *argv[])
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
 	slog("numLevels %d", lvlList.numLevels);
 
+	background = lvlList.levels[i].background;
+	backgroundPos[0] = vector2d(0, 0);
+	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
+
 	//uncomment to slog levels/obstacles
-	/*int j = 0;
+	int j = 0;
 	while (j < lvlList.numLevels)
 	{
 		int k = 0;
 		slog("level %d numObstacles %d", j, lvlList.levels[j].numObstacles);
+		slog("level %d bg %s", j, lvlList.levels[j].background->filepath);
 		while (k < lvlList.levels[j].numObstacles)
 		{
-			slog("obstacle %s", lvlList.levels[j].obstacles[k].name);
+			slog("level %d obstacle %s", j, lvlList.levels[j].obstacles[k].name);
 			k++;
 		}
 		j++;
-	}*/
+	}
 
     /*main game loop*/
 
@@ -139,7 +140,9 @@ int main(int argc, char *argv[])
 		{
 			if (!typing)
 			{
-				loadLevel(&lvlList.levels[0], background, &entityManager);
+				//slog("level bg %s", lvlList.levels[0].background->filepath);
+				loadLevel(&lvlList, 0, background, &entityManager);
+				//slog("new bg %s", background->filepath);
 				typing = 1;
 			}
 		}
@@ -147,7 +150,7 @@ int main(int argc, char *argv[])
 		{
 			if (!typing)
 			{
-				loadLevel(&lvlList.levels[1], background, &entityManager);
+				loadLevel(&lvlList, 1, background, &entityManager);
 				typing = 1;
 			}
 		}
@@ -155,7 +158,7 @@ int main(int argc, char *argv[])
 		{
 			if (!typing)
 			{
-				loadLevel(&lvlList.levels[2], background, &entityManager);
+				loadLevel(&lvlList, 2, background, &entityManager);
 				typing = 1;
 			}
 		}
@@ -200,7 +203,7 @@ int main(int argc, char *argv[])
 		for (i = 0; i < 2; i++)
 		{
 			gf2d_sprite_draw_image(background, backgroundPos[i]);
-			scrollUp(&backgroundPos[i].y, PLAYER_SPEED, NULL, NULL);
+			scrollUp(&backgroundPos[i].y, background, PLAYER_SPEED, NULL, NULL);
 		}
 
 		//entities next
