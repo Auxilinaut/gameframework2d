@@ -9,8 +9,8 @@
 #include "physics.h"
 #include "player.h"
 #include "skateboard.h"
-//#include "animation.h"
 #include "level.h"
+#include "audio.h"
 
 
 //#define SCREEN_HEIGHT_HALF 360
@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 	Bool typing = 0;
 	int mx = 0, my = 0; //mouse pos
 	float mf = 0; //mouse anim frame [0,16.0]
+
 
 	/*LEVELS*/
 	LevelList lvlList;
@@ -92,6 +93,10 @@ int main(int argc, char *argv[])
 	skateboard->ent->animList = getAnimListFromFile("smo/anim/skateboard.anim");
 	skateboard->ent->sprite = sb;
 	skateboard->ent->frames = 15;
+
+	initAudio();
+	loadMusic("smo/audio/music.ogg");
+	playMusic();
 
 	lvlList = getLevelListFromFile("smo/level/level.lvl");
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
