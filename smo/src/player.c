@@ -102,3 +102,9 @@ void updatePlayer(Entity *ent)
 
 	nextEntFrame(ent);
 }
+
+void updateScore(Player *plr, int score)
+{
+	plr->score += score;
+	if (plr->highScore < plr->score) plr->highScore = plr->score;
+}

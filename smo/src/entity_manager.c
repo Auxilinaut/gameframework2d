@@ -1,5 +1,6 @@
 #include "entity_manager.h"
 #include "player.h"
+#include "simple_logger.h"
 
 /*MANAGER*/
 
@@ -26,13 +27,24 @@ void updateAllEntities(EntityManager *entMan)
 {
 	int i;
 
-	entMan->entList[0].update(&entMan->entList[0]); // player
-	entMan->entList[1].update(&entMan->entList[1]); // skateboard
+	// player
+	setBounds(&entMan->entList[0]);
+	entMan->entList[0].update(&entMan->entList[0]);
+
+	// skateboard
+	entMan->entList[1].update(&entMan->entList[1]);
 
 	for (i = 2; i < MAX_ENTITIES; i++)
 	{
 		if (entMan->entList[i].active && entMan->entList[i].onScreen)
 		{
+			setBounds(&entMan->entList[i]);
+			if (checkCollision(entMan->entList[0].bounds, entMan->entList[i].bounds))
+			{
+				entMan->entList[0].colliding = true;
+				entMan->entList[i].colliding = true;
+				//slog("collision detected between player and entity %d", i);
+			}
 			entMan->entList[i].update(&entMan->entList[i]);
 			scrollUp(&entMan->entList[i].position.y, &entMan->entList[i].sprite, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
 		}

@@ -31,4 +31,11 @@ void movePlayer(Entity *ent);
 */
 void updatePlayer(Entity *ent);
 
+/**
+* @brief give player some score, update high score
+* @param plr pointer to the player struct
+* @param score the amount of points to give to the player
+*/
+void updateScore(Player *plr, int score);
+
 #endif

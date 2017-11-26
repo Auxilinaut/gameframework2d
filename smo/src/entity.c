@@ -20,6 +20,8 @@ Entity *initEntity(Entity *ent)
 void updateEntity(Entity *ent)
 {
 	//physics
+	
+
 	//move(ent);
 
 	if (ent->colliding)
@@ -40,10 +42,9 @@ void updateEntity(Entity *ent)
 
 void drawEntity(Entity *ent)
 {
-	//update anim frame if possible
 	if (ent->frames)
 	{
-
+		//use anim frame if possible
 		gf2d_sprite_draw(
 			ent->sprite,
 			ent->position,
@@ -59,7 +60,6 @@ void drawEntity(Entity *ent)
 	{
 		gf2d_sprite_draw_image(ent->sprite, ent->position);
 	}
-	
 }
 
 void killEntity(Entity *ent)

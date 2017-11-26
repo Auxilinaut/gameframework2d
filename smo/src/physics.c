@@ -109,6 +109,6 @@ void setBounds(Entity *ent)
 {
 	ent->bounds.x = ent->position.x;
 	ent->bounds.y = ent->position.y;
-	ent->bounds.w = ent->sprite->frame_w;
-	ent->bounds.h = ent->sprite->frame_h;
+	ent->bounds.w = ent->sprite->frame_w + ent->position.x;
+	ent->bounds.h = ent->sprite->frame_h + ent->position.y;
 }

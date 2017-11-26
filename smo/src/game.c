@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
 	slog("numLevels %d", lvlList.numLevels);
 
-	background = lvlList.levels[i].background;
+	background = lvlList.levels[0].background;
 	backgroundPos[0] = vector2d(0, 0);
 	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
@@ -145,9 +145,7 @@ int main(int argc, char *argv[])
 		{
 			if (!typing)
 			{
-				//slog("level bg %s", lvlList.levels[0].background->filepath);
 				loadLevel(&lvlList, 0, background, &entityManager);
-				//slog("new bg %s", background->filepath);
 				typing = 1;
 			}
 		}
@@ -167,7 +165,7 @@ int main(int argc, char *argv[])
 				typing = 1;
 			}
 		}
-		else if (keys[SDL_SCANCODE_SPACE])
+		else if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP])
 		{	
 			if (!typing)
 			{
@@ -175,7 +173,7 @@ int main(int argc, char *argv[])
 				typing = 1;
 			}
 		}
-		else if (keys[SDL_SCANCODE_A])
+		else if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT])
 		{
 			if (!typing)
 			{
@@ -183,7 +181,7 @@ int main(int argc, char *argv[])
 				typing = 1;
 			}
 		}
-		else if (keys[SDL_SCANCODE_D])
+		else if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT])
 		{
 			if (!typing)
 			{
