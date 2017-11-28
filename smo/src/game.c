@@ -50,7 +50,8 @@ int main(int argc, char *argv[])
 	/*OTHER*/
     int done = 0; //main while loop
 	int i = 0; //generic iterator
-	//Uint32 *time;
+	Uint32 time = SDL_GetTicks();
+	Uint32 lastTime = NULL;
     
     /*program initialization*/
 
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
 
 	initAudio();
 	loadMusic("smo/audio/music.ogg");
-	playMusic();
+	//playMusic();
 
 	lvlList = getLevelListFromFile("smo/level/level.lvl");
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
 	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
 	//uncomment to slog levels/obstacles
-	int j = 0;
+	/*int j = 0;
 	while (j < lvlList.numLevels)
 	{
 		int k = 0;
@@ -119,7 +120,7 @@ int main(int argc, char *argv[])
 			k++;
 		}
 		j++;
-	}
+	}*/
 
     /*main game loop*/
 
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
 
 		SDL_PumpEvents(); //update SDL's internal event structures
 		keys = SDL_GetKeyboardState(NULL); //get the keyboard state for this frame
-		//*time = SDL_GetTicks();
+		time = SDL_GetTicks();
 
 		//update mouse anim frame
 		mf += 0.1f;

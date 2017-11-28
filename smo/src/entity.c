@@ -4,12 +4,14 @@
 Entity *initEntity(Entity *ent)
 {
 	ent->active = 1;
+	ent->alive = 1;
 	ent->onScreen = 1;
 	ent->direction = 2;
 	ent->colliding = 0;
 	ent->jumping = 0;
 	ent->jumpTime = 0;
 	ent->falling = 0;
+	//ent->boxColor = vector4d(0,0,0,0);
 	ent->update = &updateEntity;
 	ent->draw = &drawEntity;
 	ent->kill = &killEntity;
@@ -20,14 +22,17 @@ Entity *initEntity(Entity *ent)
 void updateEntity(Entity *ent)
 {
 	//physics
-	
-
-	//move(ent);
-
 	if (ent->colliding)
 	{
-
+		ent->alive = 0;
+		//ent->boxColor = vector4d(255, 0, 0, 255);
 	}
+	else
+	{
+		//ent->boxColor = vector4d(0, 255, 0, 255);
+	}
+
+	ent->colliding = false;
 
 	nextEntFrame(ent);
 
@@ -59,6 +64,11 @@ void drawEntity(Entity *ent)
 	else
 	{
 		gf2d_sprite_draw_image(ent->sprite, ent->position);
+	}
+
+	if (ent->boxColor.w)
+	{
+		gf2d_draw_rect(ent->bounds, ent->boxColor);
 	}
 }
 

@@ -46,7 +46,7 @@ void updateAllEntities(EntityManager *entMan)
 				//slog("collision detected between player and entity %d", i);
 			}
 			entMan->entList[i].update(&entMan->entList[i]);
-			scrollUp(&entMan->entList[i].position.y, &entMan->entList[i].sprite, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
+			scrollUp(&entMan->entList[i].position.y, entMan->entList[i].sprite, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
 		}
 	}
 }
@@ -80,7 +80,7 @@ Entity *initSingleEntity(EntityManager *entMan)
 void popEntList(EntityManager *entMan)
 {
 	int i;
-	for (i = MAX_ENTITIES; i >= 1; i--)
+	for (i = MAX_ENTITIES; i >= 2; i--)
 	{
 		if (entMan->entList[i].active)
 		{

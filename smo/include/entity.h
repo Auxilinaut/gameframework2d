@@ -3,6 +3,7 @@
 
 #include "gf2d_sprite.h"
 #include "animation.h"
+#include "gf2d_draw.h"
 
 typedef struct Entity_S {
 
@@ -21,6 +22,7 @@ typedef struct Entity_S {
 	Vector2D position;
 	Vector2D velocity;
 	SDL_Rect bounds;
+	Vector4D boxColor;
 	Bool jumping;
 	Bool falling;
 	int jumpTime; // [0, JUMP_HEIGHT]

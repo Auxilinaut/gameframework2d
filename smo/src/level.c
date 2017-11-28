@@ -121,7 +121,7 @@ void loadObstacles(Level *lvl, EntityManager *entMan)
 			lvl->obstacles[i].sprite = gf2d_sprite_load_image("smo/images/blackhole.png");
 		}
 		setBounds(&lvl->obstacles[i]);
-		slog("test sprite %s frame_h %d", lvl->obstacles[i].name, lvl->obstacles[i].sprite->frame_h);
+		//slog("test sprite %s frame_h %d", lvl->obstacles[i].name, lvl->obstacles[i].sprite->frame_h);
 		obstacles = strtok(NULL, ",");
 		i++;
 	}
@@ -264,10 +264,11 @@ void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 
 void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan)
 {
-	slog("loading lvl %d", id);
-	slog("lvl %d bg %s", id, lvlList->levels[id].background->filepath);
+	//slog("loading lvl %d", id);
+	//slog("lvl %d bg %s", id, lvlList->levels[id].background->filepath);
 
 	*bg = *lvlList->levels[id].background;
+	bg->frame_h = lvlList->levels[id].background->frame_h;
 	for (int i = 2; i < lvlList->levels[id].numObstacles + 2; i++)
 	{
 		entMan->entList[i] = *initEntity(&lvlList->levels[id].obstacles[i-2]);
