@@ -24,7 +24,7 @@ void updateEntity(Entity *ent)
 	//physics
 	if (ent->colliding)
 	{
-		ent->alive = 0;
+		ent->active = 0;
 		//ent->boxColor = vector4d(255, 0, 0, 255);
 	}
 	else

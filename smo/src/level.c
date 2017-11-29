@@ -276,3 +276,27 @@ void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan)
 		entMan->entList[i].position.y = rand() % SCREEN_HEIGHT;
 	}
 }
+
+void updateCoin(Entity *ent)
+{
+	if (ent->colliding)
+	{
+		ent->active = 0;
+	}
+	else
+	{
+	}
+
+	ent->colliding = false;
+
+	nextEntFrame(ent);
+}
+
+void initCoin(Entity *ent, EntityManager *entMan)
+{
+	//ent = &entMan->entList[2]; //player id 0, skateboard id 1, coin 2
+	ent = initSingleEntity(entMan);
+	ent = initEntity(ent);
+	ent->update = &updateCoin;
+	ent->position = vector2d(rand() % SCREEN_WIDTH, SCREEN_HEIGHT);
+}

@@ -29,11 +29,13 @@ int main(int argc, char *argv[])
 	Sprite *mouse;
 	Sprite *penguin;
 	Sprite *sb;
+	Sprite *coinSpr;
 
 	/*ENTITIES*/
 	EntityManager entityManager;
 	Player *player = (Player*)malloc(sizeof(Player));
 	Skateboard *skateboard = (Skateboard*)malloc(sizeof(Skateboard));
+	Entity *coin = (Entity*)malloc(sizeof(Entity));
 
 	/*INPUT*/
 	const Uint8 *keys;
@@ -79,6 +81,7 @@ int main(int argc, char *argv[])
     mouse = gf2d_sprite_load_all("smo/images/pointer.png",32, 32, 16);
 	penguin = gf2d_sprite_load_all("smo/images/1797.png", 41, 42, 8);
 	sb = gf2d_sprite_load_all("smo/images/skateboard.png", 40, 13, 5);
+	coinSpr = gf2d_sprite_load_all("smo/images/coin.png", 74, 74, 3);
 
 	/*initialize stuff*/
 
@@ -94,6 +97,11 @@ int main(int argc, char *argv[])
 	skateboard->ent->animList = getAnimListFromFile("smo/anim/skateboard.anim");
 	skateboard->ent->sprite = sb;
 	skateboard->ent->frames = 15;
+
+	initCoin(coin, &entityManager);
+	coin->animList = getAnimListFromFile("smo/anim/coin.anim");
+	coin->sprite = coinSpr;
+	coin->frames = 8;
 
 	initAudio();
 	loadMusic("smo/audio/music.ogg");

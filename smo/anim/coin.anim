@@ -1,0 +1,5 @@
+anim: up
+startFrame: 0
+endFrame: 8
+frameRate: 0.1
+type:   loop
