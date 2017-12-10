@@ -43,6 +43,12 @@ void updateAllEntities(EntityManager *entMan)
 			{
 				entMan->entList[0].colliding = true;
 				entMan->entList[i].colliding = true;
+
+				if (strcmp(entMan->entList[i].name, "coin") != 0)
+				{
+					//update score here
+				}
+
 				//slog("collision detected between player and entity %d", i);
 			}
 			entMan->entList[i].update(&entMan->entList[i]);
@@ -69,9 +75,9 @@ Entity *initSingleEntity(EntityManager *entMan)
 	{
 		if (!entMan->entList[i].active)
 		{
-			entMan->entList[i] = *initEntity(&entMan->entList[i]);
+			entMan->entList[i] = *initEntity(&(entMan->entList[i]));
 			entMan->entRef++;
-			return (&entMan->entList[i]);
+			return (&(entMan->entList[i]));
 		}
 	}
 	return NULL;

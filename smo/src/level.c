@@ -264,14 +264,15 @@ void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 
 void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan)
 {
+	int diff = 3;
 	//slog("loading lvl %d", id);
 	//slog("lvl %d bg %s", id, lvlList->levels[id].background->filepath);
 
 	*bg = *lvlList->levels[id].background;
 	bg->frame_h = lvlList->levels[id].background->frame_h;
-	for (int i = 2; i < lvlList->levels[id].numObstacles + 2; i++)
+	for (int i = diff; i < lvlList->levels[id].numObstacles + diff; i++)
 	{
-		entMan->entList[i] = *initEntity(&lvlList->levels[id].obstacles[i-2]);
+		entMan->entList[i] = *initEntity(&lvlList->levels[id].obstacles[i-diff]);
 		entMan->entList[i].position.x = rand() % SCREEN_WIDTH;
 		entMan->entList[i].position.y = rand() % SCREEN_HEIGHT;
 	}
@@ -282,6 +283,7 @@ void updateCoin(Entity *ent)
 	if (ent->colliding)
 	{
 		ent->active = 0;
+		//maybe update score here
 	}
 	else
 	{
@@ -292,11 +294,13 @@ void updateCoin(Entity *ent)
 	nextEntFrame(ent);
 }
 
-void initCoin(Entity *ent, EntityManager *entMan)
+Entity *initCoin(Entity *coin, EntityManager *entMan)
 {
-	//ent = &entMan->entList[2]; //player id 0, skateboard id 1, coin 2
-	ent = initSingleEntity(entMan);
-	ent = initEntity(ent);
-	ent->update = &updateCoin;
-	ent->position = vector2d(rand() % SCREEN_WIDTH, SCREEN_HEIGHT);
+	//coin = &entMan->entList[2]; //player id 0, skateboard id 1, coin 2
+	coin = initSingleEntity(entMan);
+	coin = initEntity(coin);
+	strcpy(coin->name, "coin");
+	coin->update = &updateCoin;
+	coin->position = vector2d(rand() % SCREEN_WIDTH, SCREEN_HEIGHT);
+	return coin;
 }

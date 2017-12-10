@@ -5,7 +5,7 @@
 
 typedef struct Skateboard_S
 {
-	Entity *ent; //idk
+	Entity *ent;
 }Skateboard;
 
 /**

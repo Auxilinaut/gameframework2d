@@ -10,6 +10,7 @@ void initSkateboard(Skateboard *sb, EntityManager *entMan)
 	sb->ent->direction = 2;
 	sb->ent->parent = &entMan->entList[0]; //player entity is parent
 	sb->ent->onScreen = 1;
+	entMan->entRef++;
 }
 
 void moveSkateboard(Entity *ent)

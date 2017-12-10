@@ -8,6 +8,7 @@ void initPlayer(Player *plr, EntityManager *entMan)
 	plr->ent->update = &updatePlayer;
 	plr->ent->position = vector2d(400,400);
 	plr->ent->onScreen = 1;
+	entMan->entRef++;
 }
 
 void movePlayer(Entity *ent)

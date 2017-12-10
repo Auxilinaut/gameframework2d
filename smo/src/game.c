@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	EntityManager entityManager;
 	Player *player = (Player*)malloc(sizeof(Player));
 	Skateboard *skateboard = (Skateboard*)malloc(sizeof(Skateboard));
-	Entity *coin = (Entity*)malloc(sizeof(Entity));
+	Entity *coin = malloc(sizeof(Entity));
 
 	/*INPUT*/
 	const Uint8 *keys;
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     int done = 0; //main while loop
 	int i = 0; //generic iterator
 	Uint32 time = SDL_GetTicks();
-	Uint32 lastTime = NULL;
+	Uint32 lastTime = 0;
     
     /*program initialization*/
 
@@ -98,10 +98,12 @@ int main(int argc, char *argv[])
 	skateboard->ent->sprite = sb;
 	skateboard->ent->frames = 15;
 
-	initCoin(coin, &entityManager);
+	coin = initCoin(coin, &entityManager);
 	coin->animList = getAnimListFromFile("smo/anim/coin.anim");
 	coin->sprite = coinSpr;
 	coin->frames = 8;
+	setEntityAnim(coin, "up");
+	setBounds(coin);
 
 	initAudio();
 	loadMusic("smo/audio/music.ogg");

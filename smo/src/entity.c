@@ -6,6 +6,7 @@ Entity *initEntity(Entity *ent)
 	ent->active = 1;
 	ent->alive = 1;
 	ent->onScreen = 1;
+	ent->spawnTimer = 0;
 	ent->direction = 2;
 	ent->colliding = 0;
 	ent->jumping = 0;

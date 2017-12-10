@@ -19,6 +19,7 @@ typedef struct Entity_S {
 
 	Bool active;
 	Bool onScreen;
+	Uint32 spawnTimer;
 	Vector2D position;
 	Vector2D velocity;
 	SDL_Rect bounds;
