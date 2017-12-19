@@ -48,11 +48,13 @@ int main(int argc, char *argv[])
 
 	/*LEVELS*/
 	LevelList lvlList; //each level defines entities, background, and bgm 
+	int currLevel = 0;
+	char scoreStr[128];
+	SDL_Surface *textSurface = NULL;
 
 	/*OTHER*/
     int done = 0; //main while loop
 	int i = 0; //generic iterator
-	int currLevel = 0;
     
     /*program initialization*/
 
@@ -74,6 +76,13 @@ int main(int argc, char *argv[])
     gf2d_sprite_init(300);
 
     SDL_ShowCursor(SDL_DISABLE);
+
+	if (TTF_Init() < 0)
+	{
+		slog("error initializing ttf");
+	}
+
+	TTF_Font* font = NULL;// TTF_OpenFont("smo/fonts/OpenSans-Bold.ttf", 24);
     
     /*load stuff*/
 
@@ -112,7 +121,7 @@ int main(int argc, char *argv[])
 
 	initAudio();
 	loadMusic("smo/audio/music.ogg");
-	//playMusic();
+	playMusic();
 
 	lvlList = getLevelListFromFile("smo/level/level.lvl");
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
@@ -235,7 +244,13 @@ int main(int argc, char *argv[])
 		drawAllEntities(&entityManager);
             
         //UI elements last
-        gf2d_sprite_draw(
+		snprintf(scoreStr, sizeof(scoreStr), "Score: %d", currScore);
+		drawText
+		(font, textSurface, scoreStr,
+			0, 0,
+			0, 0, 0,
+			255, 255, 255);
+        /*gf2d_sprite_draw(
             mouse,
             vector2d(mx,my),
             NULL,
@@ -243,14 +258,18 @@ int main(int argc, char *argv[])
             NULL,
             NULL,
             &mouseColor,
-            (int)mf);
+            (int)mf);*/
 
         gf2d_graphics_next_frame(); //render current draw frame and skip to the next frame
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; //exit condition
 
-        printf("Rendering at %f FPS\n",gf2d_graphics_get_frames_per_second());
+        //printf("Rendering at %f FPS\n",gf2d_graphics_get_frames_per_second());
     }
+
+	TTF_CloseFont(font);
+	TTF_Quit();
+	SDL_Quit();
     slog("---==== END ====---");
     return 0;
 }

@@ -2,7 +2,7 @@
 #define __GF2D_GRAPHICS_C__
 
 #include <SDL.h>
-
+#include <SDL_ttf.h>
 #include "gf2d_types.h"
 #include "gf2d_vector.h"
 
@@ -78,5 +78,25 @@ void gf2d_graphics_blit_surface_to_screen(SDL_Surface *surface,const SDL_Rect * 
  * @returns NULL on error, or the new SDL Surface upon success
  */
 SDL_Surface *gf2d_graphics_screen_convert(SDL_Surface **surface);
+
+/**
+* @brief draw text to screen
+* @param font pointer to font
+* @param textSurface pointer to surface made by text
+* @param string characters to draw
+* @param x x position
+* @param y y position
+* @param fR foreground R color
+* @param fG foreground G color
+* @param fB foreground B color
+* @param bR background R color
+* @param bG background G color
+* @param bB background B color
+*/
+void drawText
+(TTF_Font *font, SDL_Surface* textSurface, char* string,
+	int x, int y,
+	int fR, int fG, int fB,
+	int bR, int bG, int bB);
 
 #endif

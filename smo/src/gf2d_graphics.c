@@ -297,26 +297,30 @@ SDL_Surface *gf2d_graphics_screen_convert(SDL_Surface **surface)
 }
 
 void drawText
-(TTF_Font *font, char* string,
-	int size, int x, int y,
+(TTF_Font *font, SDL_Surface* textSurface, char* string,
+	int x, int y,
 	int fR, int fG, int fB,
 	int bR, int bG, int bB)
 {
-
+	//these require TTF_Init() and at end of program TTF_Quit();
 	SDL_Color foregroundColor = { fR, fG, fB };
 	SDL_Color backgroundColor = { bR, bG, bB };
 
-	SDL_Surface* textSurface
-		= TTF_RenderText_Shaded
-		(font, string, foregroundColor, backgroundColor);
+	font = TTF_OpenFont("smo/fonts/OpenSans-Bold.ttf", 24);
+	
+	textSurface = TTF_RenderText_Shaded(font, string, foregroundColor, backgroundColor);
+
+	if (!textSurface)
+	{
+		slog("Unable to create texture from rendered text!\n");
+	}
+
+	SDL_Texture *textTexture = SDL_CreateTextureFromSurface(gf2d_graphics.renderer, textSurface);
 
 	SDL_Rect textLocation = { x, y, 0, 0 };
 
-	SDL_BlitSurface(textSurface, NULL, gf2d_graphics.surface, &textLocation);
-
-	SDL_FreeSurface(textSurface);
-
-	TTF_CloseFont(font);
+	gf2d_graphics_blit_surface_to_screen(textSurface, NULL, &textLocation);
+	SDL_RenderCopy(gf2d_graphics.renderer, textTexture, NULL, &textLocation);
 
 }
 
