@@ -1,14 +1,18 @@
 #include "player.h"
 #include "simple_logger.h"
 
-void initPlayer(Player *plr, EntityManager *entMan)
+int currScore, highScore;
+
+Entity *initPlayer(Entity *ent, EntityManager *entMan)
 {
-	plr->ent = &entMan->entList[0];
-	plr->ent = initEntity(plr->ent);
-	plr->ent->update = &updatePlayer;
-	plr->ent->position = vector2d(400,400);
-	plr->ent->onScreen = 1;
+	ent = &entMan->entList[0];
+	ent = initEntity(ent);
+	ent->update = &updatePlayer;
+	ent->touch = &touchPlayer;
+	ent->position = vector2d(400,400);
+	ent->onScreen = 1;
 	entMan->entRef++;
+	return ent;
 }
 
 void movePlayer(Entity *ent)
@@ -72,40 +76,55 @@ void movePlayer(Entity *ent)
 
 void updatePlayer(Entity *ent)
 {
-	if (ent->jumping) gravity(ent);
-	movePlayer(ent);
-	move(ent);
-	if (ent->position.y < 0)
+	if (ent->alive)
 	{
-		ent->position.y = 0;
-		ent->direction = 2;
-	}
-
-	if (ent->position.y + ent->sprite->frame_h > SCREEN_HEIGHT)
-	{
-		ent->position.y = SCREEN_HEIGHT - ent->sprite->frame_h;
-		if (ent->direction >= 2) ent->direction = 4;
-		else ent->direction = 0;
-	}
-	else if (ent->position.x < 0 || ent->position.x + ent->sprite->frame_w > SCREEN_WIDTH)
-	{
-		if (ent->direction >= 2)
+		if (ent->colliding)
 		{
-			ent->position.x = SCREEN_WIDTH - ent->sprite->frame_w;
-			ent->direction = 1;
+			ent->touch(ent, ent->collider);
 		}
-		else
-		{
-			ent->position.x = 0;
-			ent->direction = 3;
-		}
-	}
 
-	nextEntFrame(ent);
+		if (ent->jumping) gravity(ent);
+
+		movePlayer(ent);
+		move(ent);
+
+		if (ent->position.y < 0)
+		{
+			ent->position.y = 0;
+			ent->direction = 2;
+		}
+
+		if (ent->position.y + ent->sprite->frame_h > SCREEN_HEIGHT)
+		{
+			ent->position.y = SCREEN_HEIGHT - ent->sprite->frame_h;
+			if (ent->direction >= 2) ent->direction = 4;
+			else ent->direction = 0;
+		}
+		else if (ent->position.x < 0 || ent->position.x + ent->sprite->frame_w > SCREEN_WIDTH)
+		{
+			if (ent->direction >= 2)
+			{
+				ent->position.x = SCREEN_WIDTH - ent->sprite->frame_w;
+				ent->direction = 1;
+			}
+			else
+			{
+				ent->position.x = 0;
+				ent->direction = 3;
+			}
+		}
+		nextEntFrame(ent);
+	}
 }
 
-void updateScore(Player *plr, int score)
+void touchPlayer(Entity *self, Entity *other)
 {
-	plr->score += score;
-	if (plr->highScore < plr->score) plr->highScore = plr->score;
+	
+}
+
+void updateScore(int score)
+{
+	currScore += score;
+	if (highScore < currScore) highScore = currScore;
+	slog("currScore: %d", currScore);
 }

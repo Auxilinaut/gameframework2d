@@ -93,7 +93,8 @@ void scrollUp( double *yPos, Sprite *spr, double spd, Entity *ent, int *entRef )
 	{
 		if ((scrollTo + ent->sprite->frame_h) < 0)
 		{
-			scrollTo = SCREEN_HEIGHT;
+			//scrollTo = SCREEN_HEIGHT;
+			ent->kill(ent);
 		}
 	}
 	else

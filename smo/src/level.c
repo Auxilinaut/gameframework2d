@@ -1,4 +1,5 @@
 #include "level.h"
+#include "player.h"
 #include "simple_logger.h"
 
 //like fgets but for strings
@@ -264,7 +265,7 @@ void loadLevelFile(LevelList *lvlList, char *file, EntityManager *entMan)
 
 void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan)
 {
-	int diff = 3;
+	int diff = MAX_COINS + 1;
 	//slog("loading lvl %d", id);
 	//slog("lvl %d bg %s", id, lvlList->levels[id].background->filepath);
 
@@ -272,35 +273,44 @@ void loadLevel(LevelList *lvlList, int id, Sprite *bg, EntityManager *entMan)
 	bg->frame_h = lvlList->levels[id].background->frame_h;
 	for (int i = diff; i < lvlList->levels[id].numObstacles + diff; i++)
 	{
-		entMan->entList[i] = *initEntity(&lvlList->levels[id].obstacles[i-diff]);
+		entMan->entList[i] = *initEntity(&lvlList->levels[id].obstacles[i - diff]);
 		entMan->entList[i].position.x = rand() % SCREEN_WIDTH;
-		entMan->entList[i].position.y = rand() % SCREEN_HEIGHT;
+		entMan->entList[i].position.y = SCREEN_HEIGHT + rand() % 400;
+		//strcpy(entMan->entList[i].name, "obstacle");
+		entMan->entRef++;
 	}
 }
 
 void updateCoin(Entity *ent)
 {
-	if (ent->colliding)
+	if (ent->alive)
 	{
-		ent->active = 0;
-		//maybe update score here
+		nextEntFrame(ent);
+
+		ent->colliding = false;
 	}
-	else
+	else if (ent->spawnTimer < SDL_GetTicks())
 	{
+		ent->position.x = rand() % SCREEN_WIDTH;
+		ent->position.y = SCREEN_HEIGHT;
+		ent->alive = 1;
 	}
-
-	ent->colliding = false;
-
-	nextEntFrame(ent);
 }
 
-Entity *initCoin(Entity *coin, EntityManager *entMan)
+void touchCoin(Entity *coin, Entity *plr)
 {
-	//coin = &entMan->entList[2]; //player id 0, skateboard id 1, coin 2
+	coin->alive = 0;
+	coin->spawnTimer = SDL_GetTicks() + 3000;
+	updateScore(100);
+}
+
+Entity *initCoin(Entity *coin, EntityManager *entMan, int x, int y)
+{
 	coin = initSingleEntity(entMan);
 	coin = initEntity(coin);
 	strcpy(coin->name, "coin");
+	coin->touch = &touchCoin;
 	coin->update = &updateCoin;
-	coin->position = vector2d(rand() % SCREEN_WIDTH, SCREEN_HEIGHT);
+	coin->position = vector2d(x, y);
 	return coin;
 }

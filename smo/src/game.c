@@ -33,9 +33,9 @@ int main(int argc, char *argv[])
 
 	/*ENTITIES*/
 	EntityManager entityManager;
-	Player *player = (Player*)malloc(sizeof(Player));
+	Entity *player = malloc(sizeof(Entity));
 	Skateboard *skateboard = (Skateboard*)malloc(sizeof(Skateboard));
-	Entity *coin = malloc(sizeof(Entity));
+	Entity *coins[MAX_COINS];
 
 	/*INPUT*/
 	const Uint8 *keys;
@@ -47,13 +47,12 @@ int main(int argc, char *argv[])
 
 
 	/*LEVELS*/
-	LevelList lvlList;
+	LevelList lvlList; //each level defines entities, background, and bgm 
 
 	/*OTHER*/
     int done = 0; //main while loop
 	int i = 0; //generic iterator
-	Uint32 time = SDL_GetTicks();
-	Uint32 lastTime = 0;
+	int currLevel = 0;
     
     /*program initialization*/
 
@@ -87,23 +86,29 @@ int main(int argc, char *argv[])
 
 	initEntityManager(&entityManager);
 	
-	initPlayer(player, &entityManager);
-	player->ent->animList = getAnimListFromFile("smo/anim/penguin.anim");
-	player->ent->sprite = penguin;
-	player->ent->frames = 64;
-	setBounds(player->ent);
+	player = initPlayer(player, &entityManager);
+	player->animList = getAnimListFromFile("smo/anim/penguin.anim");
+	player->sprite = penguin;
+	player->frames = 64;
+	setBounds(player);
 
 	initSkateboard(skateboard, &entityManager);
 	skateboard->ent->animList = getAnimListFromFile("smo/anim/skateboard.anim");
 	skateboard->ent->sprite = sb;
 	skateboard->ent->frames = 15;
 
-	coin = initCoin(coin, &entityManager);
-	coin->animList = getAnimListFromFile("smo/anim/coin.anim");
-	coin->sprite = coinSpr;
-	coin->frames = 8;
-	setEntityAnim(coin, "up");
-	setBounds(coin);
+	size_t c;
+	Entity *currCoin = coins; //coin iterator
+	for (c = 0; c < MAX_COINS; c++)
+	{
+		currCoin = initCoin(currCoin, &entityManager, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+		currCoin->animList = getAnimListFromFile("smo/anim/coin.anim");
+		currCoin->sprite = coinSpr;
+		currCoin->frames = 8;
+		setEntityAnim(currCoin, "up");
+		setBounds(currCoin);
+		currCoin++;
+	}
 
 	initAudio();
 	loadMusic("smo/audio/music.ogg");
@@ -114,6 +119,7 @@ int main(int argc, char *argv[])
 	slog("numLevels %d", lvlList.numLevels);
 
 	background = lvlList.levels[0].background;
+	loadLevel(&lvlList, currLevel, background, &entityManager);
 	backgroundPos[0] = vector2d(0, 0);
 	backgroundPos[1] = vector2d(0, SCREEN_HEIGHT);
 
@@ -141,7 +147,6 @@ int main(int argc, char *argv[])
 
 		SDL_PumpEvents(); //update SDL's internal event structures
 		keys = SDL_GetKeyboardState(NULL); //get the keyboard state for this frame
-		time = SDL_GetTicks();
 
 		//update mouse anim frame
 		mf += 0.1f;
@@ -152,7 +157,7 @@ int main(int argc, char *argv[])
 
 		SDL_GetMouseState(&mx, &my);
 
-		if (keys[SDL_SCANCODE_1])
+		/*if (keys[SDL_SCANCODE_1])
 		{
 			if (!typing)
 			{
@@ -176,11 +181,11 @@ int main(int argc, char *argv[])
 				typing = 1;
 			}
 		}
-		else if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP])
+		else */if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP])
 		{	
 			if (!typing)
 			{
-				jump(player->ent);
+				jump(player);
 				typing = 1;
 			}
 		}
@@ -188,7 +193,7 @@ int main(int argc, char *argv[])
 		{
 			if (!typing)
 			{
-				turn(&player->ent->direction, 0);
+				turn(&player->direction, 0);
 				typing = 1;
 			}
 		}
@@ -196,13 +201,19 @@ int main(int argc, char *argv[])
 		{
 			if (!typing)
 			{
-				turn(&player->ent->direction, 1);
+				turn(&player->direction, 1);
 				typing = 1;
 			}
 		}
 		else
 		{
 			typing = 0;
+		}
+
+		if (currScore > (currLevel + 1) * 500)
+		{
+			currLevel++;
+			loadLevel(&lvlList, currLevel, background, &entityManager);
 		}
 
 		updateAllEntities(&entityManager);

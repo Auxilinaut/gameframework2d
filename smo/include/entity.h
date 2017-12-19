@@ -20,27 +20,32 @@ typedef struct Entity_S {
 	Bool active;
 	Bool onScreen;
 	Uint32 spawnTimer;
+
 	Vector2D position;
+	Uint8 direction; // [0-6,255] 0 = left, increment counterclockwise
 	Vector2D velocity;
 	SDL_Rect bounds;
 	Vector4D boxColor;
-	Bool jumping;
-	Bool falling;
-	int jumpTime; // [0, JUMP_HEIGHT]
-	Bool colliding;
-	Uint8 direction; // [0-6,255] 0 = left, increment counterclockwise
 
 	Bool alive;
-	float HP;
+	int HP;
 	float dmgTaken;
 	float dmgDealt;
 
 	struct Entity_S *parent;
+	struct Entity_S *collider;
+
+	Bool colliding;
+	Bool jumping;
+	Bool falling;
+	int jumpTime; // [0, JUMP_HEIGHT]
 
 	void(*update)(struct Entity_S *self);
 	void(*draw)(struct Entity_S *self);
 	void(*kill)(struct Entity_S *self);
 	void(*free)(struct Entity_S *self, int *entRef);
+	void(*touch)(struct Entity_S *self, struct Entity_S *other);
+
 
 }Entity;
 
@@ -74,5 +79,12 @@ void killEntity(Entity *ent);
 * @param ent reference to self
 */
 void freeEntity(Entity *ent, int *entRef);
+
+/**
+* @brief default touch (crash into player)
+* @param self pointer to player
+* @param other pointer to scorer
+*/
+void touchEntity(Entity *self, Entity *other);
 
 #endif // !__ENTITY_H_

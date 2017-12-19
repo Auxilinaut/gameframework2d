@@ -6,18 +6,16 @@
 #define PLAYER_SPEED 2.0
 #define PLAYER_SPEED_HALF PLAYER_SPEED / 2
 
-typedef struct Player_S
-{
-	Entity *ent;
-	int score;
-	int highScore;
-}Player;
+	extern int currScore;
+	extern int highScore;
 
 /**
-* @brief initialize player struct
-* @param plr pointer to player
+* @brief initialize player entity
+* @param ent pointer to player entity
+* @param entMan pointer to entity manager
+* @return pointer to player entity
 */
-void initPlayer(Player *plr, EntityManager *entMan);
+	Entity *initPlayer(Entity *ent, EntityManager *entMan);
 
 /**
 * @brief move player based on position
@@ -32,10 +30,15 @@ void movePlayer(Entity *ent);
 void updatePlayer(Entity *ent);
 
 /**
+* @brief overload for player.update(), player-specific logic
+* @param ent pointer to player entity
+*/
+void touchPlayer(Entity *self, Entity *other);
+
+/**
 * @brief give player some score, update high score
-* @param plr pointer to the player struct
 * @param score the amount of points to give to the player
 */
-void updateScore(Player *plr, int score);
+void updateScore(int score);
 
 #endif

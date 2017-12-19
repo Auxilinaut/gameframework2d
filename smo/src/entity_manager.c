@@ -27,32 +27,36 @@ void updateAllEntities(EntityManager *entMan)
 {
 	int i;
 
-	// player
-	setBounds(&entMan->entList[0]);
-	entMan->entList[0].update(&entMan->entList[0]);
+	if (entMan->entList[0].alive)
+	{
+		// player
+		setBounds(&entMan->entList[0]);
+		entMan->entList[0].update(&entMan->entList[0]);
 
-	// skateboard
-	entMan->entList[1].update(&entMan->entList[1]);
+		// skateboard
+		entMan->entList[1].update(&entMan->entList[1]);
+	}
 
+	// everything else
 	for (i = 2; i < MAX_ENTITIES; i++)
 	{
-		if (entMan->entList[i].active && entMan->entList[i].onScreen)
+		if (entMan->entList[i].active)
 		{
-			setBounds(&entMan->entList[i]);
-			if (checkCollision(entMan->entList[0].bounds, entMan->entList[i].bounds))
+			if (entMan->entList[i].alive)
 			{
-				entMan->entList[0].colliding = true;
-				entMan->entList[i].colliding = true;
-
-				if (strcmp(entMan->entList[i].name, "coin") != 0)
+				setBounds(&entMan->entList[i]);
+				if (checkCollision(entMan->entList[0].bounds, entMan->entList[i].bounds))
 				{
-					//update score here
+					entMan->entList[0].collider = &entMan->entList[i];
+					entMan->entList[0].colliding = true;
+					entMan->entList[i].colliding = true;
+					entMan->entList[i].touch(&entMan->entList[i], &entMan->entList[0]);
+					slog("collision detected between player and entity %d", i);
 				}
-
-				//slog("collision detected between player and entity %d", i);
+				scrollUp(&entMan->entList[i].position.y, entMan->entList[i].sprite, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
 			}
+
 			entMan->entList[i].update(&entMan->entList[i]);
-			scrollUp(&entMan->entList[i].position.y, entMan->entList[i].sprite, PLAYER_SPEED, &entMan->entList[i], &entMan->entRef);
 		}
 	}
 }
@@ -62,7 +66,7 @@ void drawAllEntities(EntityManager *entMan)
 	int i;
 	for (i = 0; i < MAX_ENTITIES; i++)
 	{
-		if (entMan->entList[i].active && entMan->entList[i].onScreen) entMan->entList[i].draw(&entMan->entList[i]);
+		if (entMan->entList[i].active && entMan->entList[i].alive) entMan->entList[i].draw(&entMan->entList[i]);
 	}
 }
 

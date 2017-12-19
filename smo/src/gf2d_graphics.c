@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <stdlib.h>
 
 #include "gf2d_graphics.h"
@@ -29,7 +30,7 @@ typedef struct
     Uint32 amask;
 }Graphics;
 
-/*local gobals*/
+/*local globals*/
 static Graphics gf2d_graphics;
 
 /*forward declarations*/
@@ -293,6 +294,30 @@ SDL_Surface *gf2d_graphics_screen_convert(SDL_Surface **surface)
     SDL_FreeSurface(*surface);
     *surface = NULL;
     return convert;
+}
+
+void drawText
+(TTF_Font *font, char* string,
+	int size, int x, int y,
+	int fR, int fG, int fB,
+	int bR, int bG, int bB)
+{
+
+	SDL_Color foregroundColor = { fR, fG, fB };
+	SDL_Color backgroundColor = { bR, bG, bB };
+
+	SDL_Surface* textSurface
+		= TTF_RenderText_Shaded
+		(font, string, foregroundColor, backgroundColor);
+
+	SDL_Rect textLocation = { x, y, 0, 0 };
+
+	SDL_BlitSurface(textSurface, NULL, gf2d_graphics.surface, &textLocation);
+
+	SDL_FreeSurface(textSurface);
+
+	TTF_CloseFont(font);
+
 }
 
 /*eol@eof*/
