@@ -299,9 +299,12 @@ void updateCoin(Entity *ent)
 
 void touchCoin(Entity *coin, Entity *plr)
 {
-	coin->alive = 0;
-	coin->spawnTimer = SDL_GetTicks() + 3000;
-	updateScore(100);
+	if (plr->alive)
+	{
+		coin->alive = 0;
+		coin->spawnTimer = SDL_GetTicks() + 3000;
+		updateScore(100);
+	}
 }
 
 Entity *initCoin(Entity *coin, EntityManager *entMan, int x, int y)

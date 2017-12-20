@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 		if (currScore > (currLevel + 1) * 500)
 		{
 			currLevel++;
-			loadLevel(&lvlList, currLevel, background, &entityManager);
+			if (currLevel < 3) loadLevel(&lvlList, currLevel, background, &entityManager);
 		}
 
 		updateAllEntities(&entityManager);
