@@ -1,5 +1,6 @@
-#include <SDL.h>
+#include <Windows.h>
 #include <stdio.h>
+#include <SDL.h>
 
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
@@ -12,18 +13,17 @@
 #include "level.h"
 #include "audio.h"
 
-
-//#define SCREEN_HEIGHT_HALF 360
-//#define SCREEN_HEIGHT_1POINT5 1080
-//#define SCREEN_HEIGHT_2X 1440
-
 /*----------------*/
 /*---BEGIN MAIN---*/
 /*----------------*/
 
+#ifdef _DEBUG
 int main(int argc, char *argv[])
+#endif
+#ifdef NDEBUG
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+#endif
 {
-
 	/*SPRITES*/
 	Sprite *background; Vector2D backgroundPos[2];
 	Sprite *mouse;
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	EntityManager entityManager;
 	Entity *player = malloc(sizeof(Entity));
 	Skateboard *skateboard = (Skateboard*)malloc(sizeof(Skateboard));
-	Entity *coins[MAX_COINS];
+	Entity coins[MAX_COINS];
 
 	/*INPUT*/
 	const Uint8 *keys;
@@ -45,12 +45,17 @@ int main(int argc, char *argv[])
 	int mx = 0, my = 0; //mouse pos
 	float mf = 0; //mouse anim frame [0,16.0]
 
-
 	/*LEVELS*/
 	LevelList lvlList; //each level defines entities, background, and bgm 
 	int currLevel = 0;
-	char scoreStr[128];
+
+	/*UI*/
+	int state = 0; 
+	TextLine scoreStr;
 	SDL_Surface *textSurface = NULL;
+	SDL_Point p; //point check for mouse
+	SDL_Rect rStart = (SDL_Rect) { .x = 0, .y = 0, .w = 100, .h = 30 }; //start button bounds
+	SDL_Rect rExit = (SDL_Rect) { .x = 0, .y = 30, .w = 100, .h = 30 }; //exit button bounds
 
 	/*OTHER*/
     int done = 0; //main while loop
@@ -82,7 +87,7 @@ int main(int argc, char *argv[])
 		slog("error initializing ttf");
 	}
 
-	TTF_Font* font = NULL;// TTF_OpenFont("smo/fonts/OpenSans-Bold.ttf", 24);
+	TTF_Font* font = TTF_OpenFont("smo/fonts/OpenSans-Bold.ttf", 24);
     
     /*load stuff*/
 
@@ -125,7 +130,7 @@ int main(int argc, char *argv[])
 
 	lvlList = getLevelListFromFile("smo/level/level.lvl");
 	loadLevelFile(&lvlList, "smo/level/level.lvl", &entityManager); //loads backgrounds, bgm, and obstacle data
-	slog("numLevels %d", lvlList.numLevels);
+	//slog("numLevels %d", lvlList.numLevels);
 
 	background = lvlList.levels[0].background;
 	loadLevel(&lvlList, currLevel, background, &entityManager);
@@ -151,9 +156,6 @@ int main(int argc, char *argv[])
 
 	while (!done)
 	{
-
-		/*UPDATE*/
-
 		SDL_PumpEvents(); //update SDL's internal event structures
 		keys = SDL_GetKeyboardState(NULL); //get the keyboard state for this frame
 
@@ -164,101 +166,203 @@ int main(int argc, char *argv[])
 			mf = 0;
 		}
 
-		SDL_GetMouseState(&mx, &my);
-
-		/*if (keys[SDL_SCANCODE_1])
+		if (state == 0) /*MAIN MENU*/
 		{
-			if (!typing)
+			gf2d_graphics_clear_screen();
+
+			for (i = 0; i < 2; i++)
 			{
-				loadLevel(&lvlList, 0, background, &entityManager);
-				typing = 1;
+				gf2d_sprite_draw_image(background, backgroundPos[i]);
+				scrollUp(&backgroundPos[i].y, background, PLAYER_SPEED, NULL, NULL);
+			}
+
+			drawText
+			(font, textSurface, "Start",
+				0, 0,
+				0, 0, 0,
+				255, 255, 255);
+
+			drawText
+			(font, textSurface, "Exit",
+				0, 30,
+				0, 0, 0,
+				255, 255, 255);
+
+			drawText
+			(font, textSurface,
+				"SMO: Skateboarder Mudflap Ollie",
+				0, SCREEN_HEIGHT_HALF,
+				0, 0, 0,
+				255, 255, 255);
+
+			drawText
+			(font, textSurface,
+				"WASD/Arrows: move, Space: jump, Q: speed up (100 pt. cost), E: superjump (100 pt. cost)",
+				0, SCREEN_HEIGHT_HALF + 30,
+				0, 0, 0,
+				255, 255, 255);
+
+			if (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(1))
+			{
+				if (!clicking)
+				{
+					p.x = mx;
+					p.y = my;
+					if (SDL_PointInRect(&p, &rStart))
+					{
+						player->alive = 1;
+						state++;
+					}
+					else if (SDL_PointInRect(&p, &rExit))
+					{
+						done = 1;
+					}
+					clicking = 1;
+				}
+			}
+			else
+			{
+				clicking = 0;
 			}
 		}
-		else if (keys[SDL_SCANCODE_2])
+		else if (state == 1) /*GAME*/
 		{
-			if (!typing)
+
+			/*UPDATE*/
+
+			if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP])
 			{
-				loadLevel(&lvlList, 1, background, &entityManager);
-				typing = 1;
+				if (!typing)
+				{
+					jump(player);
+					typing = 1;
+				}
+			}
+			else if (keys[SDL_SCANCODE_Q])
+			{
+				if (!typing)
+				{
+					if (currScore >= 100)
+					{
+						player->upgrade = 1;
+						player->delay = SDL_GetTicks() + 10000;
+						updateScore(-100);
+						typing = 1;
+					}
+				}
+			}
+			else if (keys[SDL_SCANCODE_E])
+			{
+				if (!typing)
+				{
+					if (currScore >= 100)
+					{
+						player->upgrade = 2;
+						jump(player);
+						updateScore(-100);
+						typing = 1;
+					}
+				}
+			}
+			else if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT])
+			{
+				if (!typing)
+				{
+					turn(&player->direction, 0);
+					typing = 1;
+				}
+			}
+			else if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT])
+			{
+				if (!typing)
+				{
+					turn(&player->direction, 1);
+					typing = 1;
+				}
+			}
+			else
+			{
+				typing = 0;
+			}
+
+			if (player->alive && currLevel < 2)
+			{
+				if (SDL_GetTicks() > (1 + currLevel) * 30000)
+				{
+					currLevel++;
+					loadLevel(&lvlList, currLevel, background, &entityManager);
+				}
+			}
+
+			if (player->upgrade == 1 && player->delay < SDL_GetTicks())
+				player->upgrade = 0;
+
+			updateAllEntities(&entityManager);
+
+			/*DRAW*/
+
+			gf2d_graphics_clear_screen(); //clears drawing buffers
+
+			//all drawing should happen between clear_screen and next_frame
+
+			//backgrounds drawn first
+			for (i = 0; i < 2; i++)
+			{
+				gf2d_sprite_draw_image(background, backgroundPos[i]);
+
+				if (player->upgrade == 1)
+					scrollUp(&backgroundPos[i].y, background, PLAYER_SPEED_MOD, NULL, NULL);
+				else
+					scrollUp(&backgroundPos[i].y, background, PLAYER_SPEED, NULL, NULL);
+			}
+
+			//entities next
+			drawAllEntities(&entityManager);
+
+			//UI elements last
+			snprintf(scoreStr, sizeof(scoreStr), "Points: %d", currScore);
+			drawText
+			(font, textSurface, scoreStr,
+				0, 0,
+				0, 0, 0,
+				255, 255, 255);
+
+			drawText
+			(font, textSurface, "Exit",
+				0, 30,
+				0, 0, 0,
+				255, 255, 255);
+
+			//exit button
+			if (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(1))
+			{
+				if (!clicking)
+				{
+					p.x = mx;
+					p.y = my;
+					if (SDL_PointInRect(&p, &rExit))
+					{
+						currScore = 0;
+						state--;
+					}
+					clicking = 1;
+				}
+			}
+			else
+			{
+				clicking = 0;
 			}
 		}
-		else if (keys[SDL_SCANCODE_3])
-		{
-			if (!typing)
-			{
-				loadLevel(&lvlList, 2, background, &entityManager);
-				typing = 1;
-			}
-		}
-		else */if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP])
-		{	
-			if (!typing)
-			{
-				jump(player);
-				typing = 1;
-			}
-		}
-		else if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT])
-		{
-			if (!typing)
-			{
-				turn(&player->direction, 0);
-				typing = 1;
-			}
-		}
-		else if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT])
-		{
-			if (!typing)
-			{
-				turn(&player->direction, 1);
-				typing = 1;
-			}
-		}
-		else
-		{
-			typing = 0;
-		}
 
-		if (currScore > (currLevel + 1) * 500)
-		{
-			currLevel++;
-			if (currLevel < 3) loadLevel(&lvlList, currLevel, background, &entityManager);
-		}
-
-		updateAllEntities(&entityManager);
-
-		/*DRAW*/
-        
-        gf2d_graphics_clear_screen(); //clears drawing buffers
-
-        //all drawing should happen between clear_screen and next_frame
-
-        //backgrounds drawn first
-		for (i = 0; i < 2; i++)
-		{
-			gf2d_sprite_draw_image(background, backgroundPos[i]);
-			scrollUp(&backgroundPos[i].y, background, PLAYER_SPEED, NULL, NULL);
-		}
-
-		//entities next
-		drawAllEntities(&entityManager);
-            
-        //UI elements last
-		snprintf(scoreStr, sizeof(scoreStr), "Score: %d", currScore);
-		drawText
-		(font, textSurface, scoreStr,
-			0, 0,
-			0, 0, 0,
-			255, 255, 255);
-        /*gf2d_sprite_draw(
-            mouse,
-            vector2d(mx,my),
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            &mouseColor,
-            (int)mf);*/
+		gf2d_sprite_draw(
+			mouse,
+			vector2d(mx, my),
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			&mouseColor,
+			(int)mf);
 
         gf2d_graphics_next_frame(); //render current draw frame and skip to the next frame
 

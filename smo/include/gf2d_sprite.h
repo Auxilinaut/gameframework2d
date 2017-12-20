@@ -8,6 +8,7 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
+#define SCREEN_HEIGHT_HALF SCREEN_HEIGHT / 2
 
 typedef struct Sprite_S
 {

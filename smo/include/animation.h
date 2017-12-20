@@ -88,12 +88,33 @@ Anim *getAnimFromList(AnimList *al, char *name);
 */
 float getAnimFrame(AnimList *al, char *name);
 
+/**
+* @brief checks next frame for current status of an Anim
+* @param al The AnimList to look in
+* @param frame the frame to look at
+* @param frame the anim name to check
+* @returns AnimReturnType
+*/
 AnimReturnType findNextFrame(AnimList *al, float * frame, char *name);
 
+/**
+* @brief loads an anim file into memory
+* @param ent which entity's anims are changing
+* @param file string containing the file name of the anim
+*/
 void loadEntityAnimFile(struct Entity_S *ent, char *file);
 
+/**
+* @brief sets the animation of one entity
+* @param ent which entity's anims are changing
+* @param anim string containing the name of the anim
+*/
 void setEntityAnim(struct Entity_S *ent, char *anim);
 
+/**
+* @brief continues an entity's animations
+* @param ent which entity's anims are changing
+*/
 void nextEntFrame(struct Entity_S *ent);
 
 #endif

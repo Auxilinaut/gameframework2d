@@ -4,8 +4,13 @@
 #include "entity.h"
 
 #define GRAVITY 2
+#define GRAVITY_MOD GRAVITY*3
+
 #define JUMP_HEIGHT 68
+#define JUMP_HEIGHT_MOD JUMP_HEIGHT*3
+
 #define JUMP_SPEED 4
+#define JUMP_SPEED_MOD JUMP_SPEED*3
 
 /**
 * @brief checks for collision between two bounds (rectangles)

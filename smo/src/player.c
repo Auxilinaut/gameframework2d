@@ -7,10 +7,14 @@ Entity *initPlayer(Entity *ent, EntityManager *entMan)
 {
 	ent = &entMan->entList[0];
 	ent = initEntity(ent);
+
 	ent->update = &updatePlayer;
 	ent->touch = &touchPlayer;
+
 	ent->position = vector2d(400,400);
 	ent->onScreen = 1;
+	ent->upgrade = 0; // {0: none, 1: super speed, 2: super jump}
+
 	entMan->entRef++;
 	return ent;
 }
@@ -124,7 +128,6 @@ void touchPlayer(Entity *self, Entity *other)
 
 void updateScore(int score)
 {
-	currScore += score;
+	if (currScore >= 0) currScore += score;
 	if (highScore < currScore) highScore = currScore;
-	slog("currScore: %d", currScore);
 }

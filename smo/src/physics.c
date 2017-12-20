@@ -38,16 +38,34 @@ void gravity(Entity *ent)
 {
 	if (ent->jumping)
 	{
-		if (!ent->falling)
+		if (ent->upgrade != 2)
 		{
-			ent->jumpTime += JUMP_SPEED;
-			ent->position.y -= JUMP_SPEED;
-			if (ent->jumpTime >= JUMP_HEIGHT) ent->falling = 1;
+			if (!ent->falling)
+			{
+				ent->jumpTime += JUMP_SPEED;
+				ent->position.y -= JUMP_SPEED;
+				if (ent->jumpTime >= JUMP_HEIGHT) ent->falling = 1;
+			}
+			ent->jumpTime -= GRAVITY;
+			ent->position.y += GRAVITY;
 		}
-		ent->jumpTime -= GRAVITY;
-		ent->position.y += GRAVITY;
+		else
+		{
+			if (!ent->falling)
+			{
+				ent->jumpTime += JUMP_SPEED_MOD;
+				ent->position.y -= JUMP_SPEED_MOD;
+				if (ent->jumpTime >= JUMP_HEIGHT_MOD) ent->falling = 1;
+			}
+			ent->jumpTime -= GRAVITY_MOD;
+			ent->position.y += GRAVITY_MOD;
+		}
 
-		if (ent->jumpTime <= 0) ent->jumping = 0;
+		if (ent->jumpTime <= 0)
+		{
+			ent->jumping = 0;
+			if (ent->upgrade == 2) ent->upgrade = 0;
+		}
 	}
 }
 
@@ -77,7 +95,7 @@ void turn( Uint8 *dir, Bool counterclockwise )
 
 void jump(Entity *ent)
 {
-	if (!ent->jumping)
+	if (ent->alive && !ent->jumping)
 	{
 		ent->jumping = 1;
 		ent->falling = 0;

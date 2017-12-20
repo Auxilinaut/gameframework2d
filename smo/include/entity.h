@@ -31,6 +31,8 @@ typedef struct Entity_S {
 	int HP;
 	float dmgTaken;
 	float dmgDealt;
+	int upgrade; // {0: none, 1: super speed, 2: super jump}
+	Uint32 delay;
 
 	struct Entity_S *parent;
 	struct Entity_S *collider;

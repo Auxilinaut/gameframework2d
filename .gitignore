@@ -6,6 +6,7 @@ smo.ilk
 smo.pdb
 smo.sln
 smo/Debug/
+smo/Release/
 smo/smo.vcxproj
 smo/smo.vcxproj.filters
 smo/smo.vcxproj.user

@@ -7,6 +7,7 @@ Entity *initEntity(Entity *ent)
 	ent->alive = 1;
 	ent->onScreen = 1;
 	ent->spawnTimer = SDL_GetTicks();
+	ent->delay = SDL_GetTicks();
 	ent->direction = 2;
 	ent->colliding = 0;
 	ent->jumping = 0;
@@ -101,6 +102,9 @@ void freeEntity(Entity *ent, int *entRef)
 
 void touchEntity(Entity *self, Entity *other)
 {
-	self->kill(self);
-	other->kill(other);
+	if (other->alive && (!other->jumping && other->upgrade != 2))
+	{
+		self->kill(self);
+		other->kill(other);
+	}
 }

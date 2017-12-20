@@ -305,8 +305,6 @@ void drawText
 	//these require TTF_Init() and at end of program TTF_Quit();
 	SDL_Color foregroundColor = { fR, fG, fB };
 	SDL_Color backgroundColor = { bR, bG, bB };
-
-	font = TTF_OpenFont("smo/fonts/OpenSans-Bold.ttf", 24);
 	
 	textSurface = TTF_RenderText_Shaded(font, string, foregroundColor, backgroundColor);
 

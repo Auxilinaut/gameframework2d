@@ -5,6 +5,7 @@
 
 #define PLAYER_SPEED 2.0
 #define PLAYER_SPEED_HALF PLAYER_SPEED / 2
+#define PLAYER_SPEED_MOD PLAYER_SPEED * 3
 
 	extern int currScore;
 	extern int highScore;

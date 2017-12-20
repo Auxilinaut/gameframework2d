@@ -299,7 +299,7 @@ void updateCoin(Entity *ent)
 
 void touchCoin(Entity *coin, Entity *plr)
 {
-	if (plr->alive)
+	if (plr->alive && (!plr->jumping && plr->upgrade != 2))
 	{
 		coin->alive = 0;
 		coin->spawnTimer = SDL_GetTicks() + 3000;
